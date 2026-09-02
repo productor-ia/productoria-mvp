@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ProductorIA</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: #101218;
+  color: white;
+  display: flex;
+  justify-content: center;
+}
+
+.app {
+  width: 100%;
+  max-width: 700px;
+  padding: 30px 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #9da3b0;
+  margin-bottom: 30px;
+}
+
+.card {
+  background: #191c24;
+  border: 1px solid #303541;
+  border-radius: 22px;
+  padding: 25px;
+}
+
+.status {
+  text-align: center;
+  color: #9da3b0;
+}
+
+.note {
+  text-align: center;
+  font-size: 80px;
+  font-weight: bold;
+  margin: 35px 0 10px;
+}
+
+.frequency {
+  text-align: center;
+  color: #aeb4c0;
+}
+
+button {
+  width: 100%;
+  padding: 16px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.start {
+  background: white;
+  color: #111;
+}
+
+.stop {
+  background: #292e39;
+  color: white;
+}
+
+canvas {
+  width: 100%;
+  height: 100px;
+  margin-top: 25px;
+  background: #101218;
+  border-radius: 14px;
+}
+
+.info {
+  margin-top: 25px;
+  padding: 18px;
+  background: #11141b;
+  border-radius: 15px;
+  color: #b8bec9;
+  line-height: 1.5;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<h1>ProductorIA</h1>
+
+<div class="subtitle">
+Tu compañero compositor
+</div>
+
+<div class="card">
+
+<div id="status" class="status">
+Micrófono detenido
+</div>
+
+<div id="note" class="note">
+—
+</div>
+
+<div id="frequency" class="frequency">
+Toca una nota
+</div>
+
+<canvas id="wave"></canvas>
+
+<button id="start" class="start">
+🎙 Activar micrófono
+</button>
+
+<button id="stop" class="stop" disabled>
+Detener
+</button>
+
+<div class="info">
+<b>Primera prueba</b><br><br>
+ProductorIA está intentando escuchar tu instrumento
+y detectar la frecuencia fundamental de la señal.
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let audioContext;
+let analyser;
+let microphone;
+let stream;
+let animation;
+
+const noteNames = [
+"C", "C♯", "D", "D♯", "E", "F",
+"F♯", "G", "G♯", "A", "A♯", "B"
+];
+
+const noteElement = document.getElementById("note");
+const frequencyElement = document.getElementById("frequency");
+const statusElement = document.getElementById("status");
+
+const canvas = document.getElementById("wave");
+const canvasContext = canvas.getContext("2d");
+
+function frequencyToNote(frequency) {
+
+    const midi =
+        Math.round(
+            69 + 12 * Math.log2(frequency / 440)
+        );
+
+    return noteNames[(midi % 12 + 12) % 12];
+}
+
+function detectPitch(buffer, sampleRate) {
+
+    let rms = 0;
+
+    for (let i = 0; i < buffer.length; i++) {
+        rms += buffer[i] * buffer[i];
+    }
+
+    rms = Math.sqrt(rms / buffer.length);
+
+    if (rms < 0.015) {
+        return null;
+    }
+
+    let bestCorrelation = 0;
+    let bestLag = -1;
+
+    for (
+        let lag = 20;
+        lag < 1000;
+        lag++
+    ) {
+
+        let correlation = 0;
+
+        for (
+            let i = 0;
+            i < buffer.length - lag;
+            i++
+        ) {
+
+            correlation +=
+                buffer[i] *
+                buffer[i + lag];
+        }
+
+        correlation /=
+            buffer.length - lag;
+
+        if (correlation > bestCorrelation) {
+
+            bestCorrelation = correlation;
+            bestLag = lag;
+
+        }
+    }
+
+    if (bestLag === -1) {
+        return null;
+    }
+
+    return sampleRate / bestLag;
+}
+
+function drawWaveform(buffer) {
+
+    canvasContext.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    canvasContext.beginPath();
+
+    for (
+        let i = 0;
+        i < buffer.length;
+        i++
+    ) {
+
+        const x =
+            i / buffer.length *
+            canvas.width;
+
+        const y =
+            (1 - buffer[i]) *
+            canvas.height / 2;
+
+        if (i === 0) {
+            canvasContext.moveTo(x, y);
+        } else {
+            canvasContext.lineTo(x, y);
+        }
+    }
+
+    canvasContext.stroke();
+}
+
+function processAudio() {
+
+    const buffer =
+        new Float32Array(
+            analyser.fftSize
+        );
+
+    analyser.getFloatTimeDomainData(buffer);
+
+    drawWaveform(buffer);
+
+    const frequency =
+        detectPitch(
+            buffer,
+            audioContext.sampleRate
+        );
+
+    if (frequency) {
+
+        const note =
+            frequencyToNote(frequency);
+
+        noteElement.textContent =
+            note;
+
+        frequencyElement.textContent =
+            frequency.toFixed(1) +
+            " Hz";
+
+    }
+
+    animation =
+        requestAnimationFrame(
+            processAudio
+        );
+}
+
+document
+.getElementById("start")
+.addEventListener("click", async () => {
+
+    try {
+
+        stream =
+            await navigator.mediaDevices
+            .getUserMedia({
+                audio: {
+                    echoCancellation: false,
+                    noiseSuppression: false,
+                    autoGainControl: false
+                }
+            });
+
+        audioContext =
+            new (
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
+
+        microphone =
+            audioContext
+            .createMediaStreamSource(
+                stream
+            );
+
+        analyser =
+            audioContext
+            .createAnalyser();
+
+        analyser.fftSize = 4096;
+
+        microphone.connect(
+            analyser
+        );
+
+        statusElement.textContent =
+            "🎙 Escuchando en tiempo real";
+
+        document
+        .getElementById("start")
+        .disabled = true;
+
+        document
+        .getElementById("stop")
+        .disabled = false;
+
+        processAudio();
+
+    } catch (error) {
+
+        statusElement.textContent =
+            "No se pudo acceder al micrófono";
+
+        console.error(error);
+
+    }
+
+});
+
+document
+.getElementById("stop")
+.addEventListener("click", () => {
+
+    cancelAnimationFrame(animation);
+
+    if (stream) {
+
+        stream
+        .getTracks()
+        .forEach(track =>
+            track.stop()
+        );
+
+    }
+
+    if (audioContext) {
+        audioContext.close();
+    }
+
+    statusElement.textContent =
+        "Micrófono detenido";
+
+    document
+    .getElementById("start")
+    .disabled = false;
+
+    document
+    .getElementById("stop")
+    .disabled = true;
+
+});
+
+</script>
+
+</body>
+</html>

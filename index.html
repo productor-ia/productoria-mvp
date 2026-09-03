@@ -180,53 +180,143 @@ let microphone;
 let stream;
 let animation;
 
+/* ================================
+   CONFIGURACIÓN
+================================ */
+
 const noteNames = [
-"C", "C♯", "D", "D♯", "E", "F",
-"F♯", "G", "G♯", "A", "A♯", "B"
+    "C", "C♯", "D", "D♯", "E", "F",
+    "F♯", "G", "G♯", "A", "A♯", "B"
 ];
 
-const noteElement = document.getElementById("note");
-const frequencyElement = document.getElementById("frequency");
-const statusElement = document.getElementById("status");
+const RMS_THRESHOLD = 0.008;
+
+/*
+ * Cuántas lecturas consecutivas necesita
+ * una nota para ser confirmada.
+ */
+const STABILITY_REQUIRED = 3;
+
+/*
+ * Tiempo de silencio necesario para considerar
+ * que una nota terminó.
+ */
+const RELEASE_TIME = 90;
+
+/*
+ * Tiempo mínimo entre dos registros.
+ */
+const RETRIGGER_TIME = 80;
+
+/*
+ * Conservamos los últimos 5 segundos.
+ */
+const MELODY_WINDOW = 5000;
+
+
+/* ================================
+   ELEMENTOS HTML
+================================ */
+
+const noteElement =
+    document.getElementById("note");
+
+const frequencyElement =
+    document.getElementById("frequency");
+
+const statusElement =
+    document.getElementById("status");
+
 const melodyElement =
     document.getElementById("melodyNotes");
-const canvas = document.getElementById("wave");
-const canvasContext = canvas.getContext("2d");
+
+const canvas =
+    document.getElementById("wave");
+
+const canvasContext =
+    canvas.getContext("2d");
+
+
+/* ================================
+   ESTADO DEL DETECTOR
+================================ */
+
+let candidateNote = null;
+let candidateCount = 0;
+
+let activeNote = null;
+let activeFrequency = null;
+
+let silenceStarted = null;
+let lastRecordedTime = 0;
+
+let detectedNotes = [];
+
+
+/* ================================
+   FRECUENCIA → NOTA
+================================ */
 
 function frequencyToNote(frequency) {
 
     const midi =
         Math.round(
-            69 + 12 * Math.log2(frequency / 440)
+            69 +
+            12 *
+            Math.log2(frequency / 440)
         );
 
-    return noteNames[(midi % 12 + 12) % 12];
+    return noteNames[
+        (midi % 12 + 12) % 12
+    ];
 }
+
+
+/* ================================
+   DETECTOR DE PITCH
+================================ */
 
 function detectPitch(buffer, sampleRate) {
 
     let rms = 0;
 
-    for (let i = 0; i < buffer.length; i++) {
-        rms += buffer[i] * buffer[i];
+    for (
+        let i = 0;
+        i < buffer.length;
+        i++
+    ) {
+
+        rms +=
+            buffer[i] *
+            buffer[i];
     }
 
-    rms = Math.sqrt(rms / buffer.length);
+    rms =
+        Math.sqrt(
+            rms / buffer.length
+        );
 
-    if (rms < 0.008) {
+    if (rms < RMS_THRESHOLD) {
         return null;
     }
+
 
     const minFrequency = 75;
     const maxFrequency = 380;
 
     const minLag =
-        Math.floor(sampleRate / maxFrequency);
+        Math.floor(
+            sampleRate / maxFrequency
+        );
 
     const maxLag =
-        Math.floor(sampleRate / minFrequency);
+        Math.floor(
+            sampleRate / minFrequency
+        );
+
 
     let candidates = [];
+
 
     for (
         let lag = minLag;
@@ -238,6 +328,7 @@ function detectPitch(buffer, sampleRate) {
         let energy1 = 0;
         let energy2 = 0;
 
+
         for (
             let i = 0;
             i < buffer.length - lag;
@@ -248,9 +339,14 @@ function detectPitch(buffer, sampleRate) {
             const b = buffer[i + lag];
 
             sum += a * b;
-            energy1 += a * a;
-            energy2 += b * b;
+
+            energy1 +=
+                a * a;
+
+            energy2 +=
+                b * b;
         }
+
 
         if (
             energy1 === 0 ||
@@ -259,115 +355,52 @@ function detectPitch(buffer, sampleRate) {
             continue;
         }
 
+
         const score =
             sum /
             Math.sqrt(
-                energy1 * energy2
+                energy1 *
+                energy2
             );
+
 
         if (score > 0.20) {
 
             candidates.push({
-                frequency: sampleRate / lag,
-                score: score
-            });
+                frequency:
+                    sampleRate / lag,
 
+                score:
+                    score
+            });
         }
     }
 
-    if (candidates.length === 0) {
+
+    if (
+        candidates.length === 0
+    ) {
+
         return null;
     }
 
+
     candidates.sort(
-        (a, b) => b.score - a.score
+        (a, b) =>
+            b.score - a.score
     );
+
 
     let selected =
         candidates[0];
 
 
     /*
-     * CORRECCIÓN DE SUBARMÓNICOS
+     * Corrección específica de armónicos.
      *
-     * El E agudo de guitarra está alrededor
-     * de 329.6 Hz.
-     *
-     * A veces la autocorrelación puede escoger
-     * aproximadamente 1/3 de esa frecuencia:
-     *
-     * 329.6 / 3 ≈ 109.9 Hz
-     *
-     * que coincide con A.
-     *
-     * Buscamos entonces una frecuencia cercana
-     * a 3 veces la seleccionada.
-     */
-
-    if (
-        selected.frequency >= 95 &&
-        selected.frequency <= 120
-    ) {
-
-        const possibleFundamental =
-            selected.frequency * 3;
-
-        let higherCandidate = null;
-
-        for (
-            const candidate of candidates
-        ) {
-
-            const difference =
-                Math.abs(
-                    candidate.frequency -
-                    possibleFundamental
-                );
-
-            if (
-                difference <= 4 &&
-                (
-                    higherCandidate === null ||
-                    candidate.score >
-                    higherCandidate.score
-                )
-            ) {
-
-                higherCandidate =
-                    candidate;
-            }
-        }
-
-
-        /*
-         * No cambiamos automáticamente A por E.
-         *
-         * Solo hacemos la corrección si la
-         * frecuencia superior tiene suficiente
-         * correlación.
-         */
-
-        if (
-            higherCandidate &&
-            higherCandidate.score >=
-            selected.score * 0.70
-        ) {
-
-            selected =
-                higherCandidate;
-        }
-    }
-
-
-    /*
-     * CORRECCIÓN DE OCTAVA PARA E2 / E3
-     *
-     * E2 ≈ 82.4 Hz
-     * E3 ≈ 164.8 Hz
-     *
-     * Si detectamos E3 pero también existe
-     * una fundamental cercana a la mitad,
-     * preferimos la fundamental.
+     * Si detectamos aproximadamente E3
+     * (164.8 Hz), buscamos E2
+     * (82.4 Hz).
      */
 
     if (
@@ -375,23 +408,27 @@ function detectPitch(buffer, sampleRate) {
         selected.frequency <= 180
     ) {
 
-        const possibleFundamental =
+        const fundamental =
             selected.frequency / 2;
 
-        let fundamentalCandidate = null;
+        let fundamentalCandidate =
+            null;
+
 
         for (
-            const candidate of candidates
+            const candidate
+            of candidates
         ) {
 
             const difference =
                 Math.abs(
                     candidate.frequency -
-                    possibleFundamental
+                    fundamental
                 );
 
+
             if (
-                difference <= 3 &&
+                difference <= 2 &&
                 (
                     fundamentalCandidate === null ||
                     candidate.score >
@@ -404,6 +441,7 @@ function detectPitch(buffer, sampleRate) {
             }
         }
 
+
         if (
             fundamentalCandidate &&
             fundamentalCandidate.score >=
@@ -415,8 +453,15 @@ function detectPitch(buffer, sampleRate) {
         }
     }
 
+
     return selected.frequency;
 }
+
+
+/* ================================
+   ONDA
+================================ */
+
 function drawWaveform(buffer) {
 
     canvasContext.clearRect(
@@ -435,41 +480,117 @@ function drawWaveform(buffer) {
     ) {
 
         const x =
-            i / buffer.length *
+            i /
+            buffer.length *
             canvas.width;
+
 
         const y =
             (1 - buffer[i]) *
-            canvas.height / 2;
+            canvas.height /
+            2;
+
 
         if (i === 0) {
-            canvasContext.moveTo(x, y);
+
+            canvasContext.moveTo(
+                x,
+                y
+            );
+
         } else {
-            canvasContext.lineTo(x, y);
+
+            canvasContext.lineTo(
+                x,
+                y
+            );
         }
     }
 
     canvasContext.stroke();
 }
 
-let melody = [];
-let lastRecordedNote = null;
-let recordingMelody = false;
 
-let detectedNotes = [];
+/* ================================
+   REGISTRAR NOTA
+================================ */
 
-let lastStoredNote = null;
-let lastStoredTime = 0;
+function recordNote(
+    note,
+    frequency,
+    now
+) {
 
-let lastDetectedNote = null;
-let stableNote = null;
-let stableCount = 0;
+    /*
+     * Evitamos registros demasiado juntos.
+     */
 
-// Filtro de eventos musicales
-let candidateNote = null;
-let candidateSince = 0;
+    if (
+        now - lastRecordedTime <
+        RETRIGGER_TIME
+    ) {
 
-const NOTE_CONFIRM_TIME = 120;
+        return;
+    }
+
+
+    detectedNotes.push({
+
+        note:
+            note,
+
+        frequency:
+            frequency,
+
+        time:
+            now
+    });
+
+
+    lastRecordedTime =
+        now;
+
+
+    /*
+     * Eliminamos notas antiguas.
+     */
+
+    detectedNotes =
+        detectedNotes.filter(
+            item =>
+                now - item.time <
+                MELODY_WINDOW
+        );
+
+
+    /*
+     * Mostramos la melodía.
+     */
+
+    if (
+        detectedNotes.length > 0
+    ) {
+
+        melodyElement.textContent =
+            detectedNotes
+                .map(
+                    item =>
+                        item.note
+                )
+                .join(" → ");
+
+    } else {
+
+        melodyElement.textContent =
+            "—";
+    }
+}
+
+
+/* ================================
+   PROCESAMIENTO PRINCIPAL
+================================ */
+
 function processAudio() {
 
     const buffer =
@@ -477,9 +598,14 @@ function processAudio() {
             analyser.fftSize
         );
 
-    analyser.getFloatTimeDomainData(buffer);
+
+    analyser.getFloatTimeDomainData(
+        buffer
+    );
+
 
     drawWaveform(buffer);
+
 
     const frequency =
         detectPitch(
@@ -487,233 +613,378 @@ function processAudio() {
             audioContext.sampleRate
         );
 
-    if (frequency) {
 
-        const note =
-            frequencyToNote(frequency);
+    const now =
+        Date.now();
 
-        if (note === lastDetectedNote) {
 
-            stableCount++;
+    /* ============================
+       NO HAY SEÑAL
+    ============================ */
 
-        } else {
-
-            lastDetectedNote =
-                note;
-
-            stableCount = 1;
-        }
+    if (!frequency) {
 
         /*
-         * Confirmamos una nota después
-         * de varias lecturas consecutivas.
-         *
-         * Esto evita que un ruido breve
-         * cambie inmediatamente la nota.
+         * Si había una nota activa,
+         * comenzamos a medir silencio.
          */
 
-        if (stableCount >= 3) {
+        if (
+            activeNote !== null &&
+            silenceStarted === null
+        ) {
 
-            stableNote =
-                note;
+            silenceStarted =
+                now;
+        }
 
-            noteElement.textContent =
-                stableNote;
 
-            frequencyElement.textContent =
-                frequency.toFixed(1) +
-                " Hz";/*
- * Guardamos las notas detectadas
- * para poder analizarlas posteriormente
- * como melodía o acorde.
- */
+        /*
+         * Si el silencio dura suficiente,
+         * liberamos la nota.
+         */
 
-/*
- * Filtro de eventos musicales.
- *
- * No guardamos continuamente la misma nota.
- * Solo registramos una nota cuando:
- *
- * 1. Es diferente de la última registrada.
- * 2. Permanece estable durante un pequeño
- *    período de tiempo.
- */
+        if (
+            activeNote !== null &&
+            silenceStarted !== null &&
+            now - silenceStarted >=
+            RELEASE_TIME
+        ) {
 
-const now = Date.now();
+            activeNote =
+                null;
 
-if (stableNote !== lastStoredNote) {
+            activeFrequency =
+                null;
 
-    // Apareció una posible nota nueva
-    if (candidateNote !== stableNote) {
+            candidateNote =
+                null;
 
-        candidateNote = stableNote;
-        candidateSince = now;
+            candidateCount =
+                0;
 
+            silenceStarted =
+                null;
+        }
+
+
+        animation =
+            requestAnimationFrame(
+                processAudio
+            );
+
+        return;
     }
 
-    // La nueva nota se mantuvo suficiente tiempo
+
+    /* ============================
+       HAY SEÑAL
+    ============================ */
+
+    silenceStarted =
+        null;
+
+
+    const note =
+        frequencyToNote(
+            frequency
+        );
+
+
+    /* ============================
+       TODAVÍA ESTAMOS EN LA MISMA
+       NOTA
+    ============================ */
+
     if (
-        candidateNote === stableNote &&
-        now - candidateSince >= NOTE_CONFIRM_TIME
+        activeNote === note
     ) {
 
-        detectedNotes.push({
-            note: stableNote,
-            frequency: frequency,
-            time: now
-        });
+        activeFrequency =
+            frequency;
 
-        lastStoredNote = stableNote;
-        lastStoredTime = now;
 
-        // Reiniciamos el candidato
-        candidateNote = null;
-        candidateSince = 0;
+        noteElement.textContent =
+            activeNote;
+
+
+        frequencyElement.textContent =
+            frequency.toFixed(1) +
+            " Hz";
+
+
+        animation =
+            requestAnimationFrame(
+                processAudio
+            );
+
+        return;
     }
 
-} else {
 
-    // La nota sigue siendo la misma:
-    // no hacemos otro registro.
-    candidateNote = null;
-    candidateSince = 0;
-}
-/*
- * Conservamos solamente los últimos
- * 5 segundos de interpretación.
- */
+    /* ============================
+       NUEVA NOTA CANDIDATA
+    ============================ */
 
-detectedNotes =
-    detectedNotes.filter(
-        item =>
-            now - item.time < 5000
-    );
-          /*
- * Mostramos las notas detectadas
- * durante los últimos 5 segundos.
- */
+    if (
+        candidateNote === note
+    ) {
 
-if (detectedNotes.length > 0) {
-
-    melodyElement.textContent =
-        detectedNotes
-        .map(item => item.note)
-        .join(" → ");
-
-} else {
-
-    melodyElement.textContent =
-        "—";
-}
-        }
+        candidateCount++;
 
     } else {
 
-    stableCount = 0;
+        candidateNote =
+            note;
 
-    candidateNote = null;
-    candidateSince = 0;
-}
+        candidateCount =
+            1;
+    }
+
+
+    /* ============================
+       CONFIRMAR NUEVA NOTA
+    ============================ */
+
+    if (
+        candidateCount >=
+        STABILITY_REQUIRED
+    ) {
+
+        /*
+         * La nueva nota queda activa.
+         */
+
+        activeNote =
+            note;
+
+        activeFrequency =
+            frequency;
+
+
+        noteElement.textContent =
+            note;
+
+
+        frequencyElement.textContent =
+            frequency.toFixed(1) +
+            " Hz";
+
+
+        /*
+         * La registramos solamente
+         * una vez.
+         */
+
+        recordNote(
+            note,
+            frequency,
+            now
+        );
+
+
+        /*
+         * Reiniciamos candidato.
+         */
+
+        candidateNote =
+            null;
+
+        candidateCount =
+            0;
+    }
+
+
     animation =
         requestAnimationFrame(
             processAudio
         );
 }
 
+
+/* ================================
+   ACTIVAR MICRÓFONO
+================================ */
+
 document
 .getElementById("start")
-.addEventListener("click", async () => {
+.addEventListener(
+    "click",
+    async () => {
 
-    try {
+        try {
 
-        stream =
-            await navigator.mediaDevices
-            .getUserMedia({
-                audio: {
-                    echoCancellation: false,
-                    noiseSuppression: false,
-                    autoGainControl: false
-                }
-            });
+            stream =
+                await navigator
+                .mediaDevices
+                .getUserMedia({
 
-        audioContext =
-            new (
-                window.AudioContext ||
-                window.webkitAudioContext
-            )();
+                    audio: {
 
-        microphone =
-            audioContext
-            .createMediaStreamSource(
-                stream
+                        echoCancellation:
+                            false,
+
+                        noiseSuppression:
+                            false,
+
+                        autoGainControl:
+                            false
+                    }
+                });
+
+
+            audioContext =
+                new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
+
+
+            microphone =
+                audioContext
+                .createMediaStreamSource(
+                    stream
+                );
+
+
+            analyser =
+                audioContext
+                .createAnalyser();
+
+
+            analyser.fftSize =
+                4096;
+
+
+            microphone.connect(
+                analyser
             );
 
-        analyser =
-            audioContext
-            .createAnalyser();
 
-        analyser.fftSize = 4096;
+            /*
+             * Reiniciamos el estado
+             * de la interpretación.
+             */
 
-        microphone.connect(
-            analyser
-        );
+            candidateNote =
+                null;
 
-        statusElement.textContent =
-            "🎙 Escuchando en tiempo real";
+            candidateCount =
+                0;
 
-        document
-        .getElementById("start")
-        .disabled = true;
+            activeNote =
+                null;
 
-        document
-        .getElementById("stop")
-        .disabled = false;
+            activeFrequency =
+                null;
 
-        processAudio();
+            silenceStarted =
+                null;
 
-    } catch (error) {
+            detectedNotes =
+                [];
 
-        statusElement.textContent =
-            "No se pudo acceder al micrófono";
+            lastRecordedTime =
+                0;
 
-        console.error(error);
 
+            melodyElement.textContent =
+                "—";
+
+
+            statusElement.textContent =
+                "🎙 Escuchando en tiempo real";
+
+
+            document
+            .getElementById("start")
+            .disabled =
+                true;
+
+
+            document
+            .getElementById("stop")
+            .disabled =
+                false;
+
+
+            processAudio();
+
+
+        } catch (error) {
+
+            statusElement.textContent =
+                "No se pudo acceder al micrófono";
+
+            console.error(
+                error
+            );
+        }
     }
+);
 
-});
+
+/* ================================
+   DETENER
+================================ */
 
 document
 .getElementById("stop")
-.addEventListener("click", () => {
+.addEventListener(
+    "click",
+    () => {
 
-    cancelAnimationFrame(animation);
-
-    if (stream) {
-
-        stream
-        .getTracks()
-        .forEach(track =>
-            track.stop()
+        cancelAnimationFrame(
+            animation
         );
 
+
+        if (stream) {
+
+            stream
+                .getTracks()
+                .forEach(
+                    track =>
+                        track.stop()
+                );
+        }
+
+
+        if (audioContext) {
+
+            audioContext.close();
+        }
+
+
+        activeNote =
+            null;
+
+        candidateNote =
+            null;
+
+        candidateCount =
+            0;
+
+        silenceStarted =
+            null;
+
+
+        statusElement.textContent =
+            "Micrófono detenido";
+
+
+        document
+        .getElementById("start")
+        .disabled =
+            false;
+
+
+        document
+        .getElementById("stop")
+        .disabled =
+            true;
     }
-
-    if (audioContext) {
-        audioContext.close();
-    }
-
-    statusElement.textContent =
-        "Micrófono detenido";
-
-    document
-    .getElementById("start")
-    .disabled = false;
-
-    document
-    .getElementById("stop")
-    .disabled = true;
-
-});
+);
 
 </script>
 

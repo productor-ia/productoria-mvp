@@ -286,18 +286,88 @@ function detectPitch(buffer, sampleRate) {
     let selected =
         candidates[0];
 
+
     /*
-     * Comprobación de armónicos.
+     * CORRECCIÓN DE SUBARMÓNICOS
      *
-     * Si la frecuencia encontrada está
-     * aproximadamente entre 150 y 180 Hz,
-     * comprobamos si existe una fundamental
-     * cercana a la mitad.
+     * El E agudo de guitarra está alrededor
+     * de 329.6 Hz.
      *
-     * Esto ayuda especialmente con:
+     * A veces la autocorrelación puede escoger
+     * aproximadamente 1/3 de esa frecuencia:
+     *
+     * 329.6 / 3 ≈ 109.9 Hz
+     *
+     * que coincide con A.
+     *
+     * Buscamos entonces una frecuencia cercana
+     * a 3 veces la seleccionada.
+     */
+
+    if (
+        selected.frequency >= 95 &&
+        selected.frequency <= 120
+    ) {
+
+        const possibleFundamental =
+            selected.frequency * 3;
+
+        let higherCandidate = null;
+
+        for (
+            const candidate of candidates
+        ) {
+
+            const difference =
+                Math.abs(
+                    candidate.frequency -
+                    possibleFundamental
+                );
+
+            if (
+                difference <= 4 &&
+                (
+                    higherCandidate === null ||
+                    candidate.score >
+                    higherCandidate.score
+                )
+            ) {
+
+                higherCandidate =
+                    candidate;
+            }
+        }
+
+
+        /*
+         * No cambiamos automáticamente A por E.
+         *
+         * Solo hacemos la corrección si la
+         * frecuencia superior tiene suficiente
+         * correlación.
+         */
+
+        if (
+            higherCandidate &&
+            higherCandidate.score >=
+            selected.score * 0.70
+        ) {
+
+            selected =
+                higherCandidate;
+        }
+    }
+
+
+    /*
+     * CORRECCIÓN DE OCTAVA PARA E2 / E3
      *
      * E2 ≈ 82.4 Hz
      * E3 ≈ 164.8 Hz
+     *
+     * Si detectamos E3 pero también existe
+     * una fundamental cercana a la mitad,
+     * preferimos la fundamental.
      */
 
     if (
@@ -305,7 +375,7 @@ function detectPitch(buffer, sampleRate) {
         selected.frequency <= 180
     ) {
 
-        const fundamental =
+        const possibleFundamental =
             selected.frequency / 2;
 
         let fundamentalCandidate = null;
@@ -317,11 +387,11 @@ function detectPitch(buffer, sampleRate) {
             const difference =
                 Math.abs(
                     candidate.frequency -
-                    fundamental
+                    possibleFundamental
                 );
 
             if (
-                difference <= 2 &&
+                difference <= 3 &&
                 (
                     fundamentalCandidate === null ||
                     candidate.score >
@@ -331,9 +401,7 @@ function detectPitch(buffer, sampleRate) {
 
                 fundamentalCandidate =
                     candidate;
-
             }
-
         }
 
         if (
@@ -344,9 +412,7 @@ function detectPitch(buffer, sampleRate) {
 
             selected =
                 fundamentalCandidate;
-
         }
-
     }
 
     return selected.frequency;

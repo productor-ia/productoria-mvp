@@ -185,14 +185,10 @@ function detectPitch(buffer, sampleRate) {
 
     rms = Math.sqrt(rms / buffer.length);
 
-    // Umbral bajo para permitir detectar
-    // la 6ª cuerda aunque llegue débil al micrófono.
     if (rms < 0.008) {
         return null;
     }
 
-    // Rango de las seis cuerdas de una guitarra
-    // estándar: E2 (82.4 Hz) a E4 (329.6 Hz).
     const minFrequency = 75;
     const maxFrequency = 380;
 
@@ -202,8 +198,7 @@ function detectPitch(buffer, sampleRate) {
     const maxLag =
         Math.floor(sampleRate / minFrequency);
 
-    let bestLag = -1;
-    let bestScore = 0;
+    let candidates = [];
 
     for (
         let lag = minLag;
@@ -242,37 +237,91 @@ function detectPitch(buffer, sampleRate) {
                 energy1 * energy2
             );
 
-        if (score > bestScore) {
+        if (score > 0.20) {
 
-            bestScore = score;
-            bestLag = lag;
+            candidates.push({
+                frequency: sampleRate / lag,
+                score: score
+            });
+
         }
     }
 
-    if (
-        bestLag === -1 ||
-        bestScore < 0.20
-    ) {
+    if (candidates.length === 0) {
         return null;
     }
 
-    let frequency =
-        sampleRate / bestLag;
+    candidates.sort(
+        (a, b) => b.score - a.score
+    );
 
-    // Corrección de subarmónico:
-    // evita interpretar D3 (~146.8 Hz)
-    // como D2 (~73.4 Hz).
-    if (frequency < 100) {
+    let selected =
+        candidates[0];
 
-        const doubled =
-            frequency * 2;
+    /*
+     * Comprobación de armónicos.
+     *
+     * Si la frecuencia encontrada está
+     * aproximadamente entre 150 y 180 Hz,
+     * comprobamos si existe una fundamental
+     * cercana a la mitad.
+     *
+     * Esto ayuda especialmente con:
+     *
+     * E2 ≈ 82.4 Hz
+     * E3 ≈ 164.8 Hz
+     */
 
-        if (doubled <= maxFrequency) {
-            frequency = doubled;
+    if (
+        selected.frequency >= 150 &&
+        selected.frequency <= 180
+    ) {
+
+        const fundamental =
+            selected.frequency / 2;
+
+        let fundamentalCandidate = null;
+
+        for (
+            const candidate of candidates
+        ) {
+
+            const difference =
+                Math.abs(
+                    candidate.frequency -
+                    fundamental
+                );
+
+            if (
+                difference <= 2 &&
+                (
+                    fundamentalCandidate === null ||
+                    candidate.score >
+                    fundamentalCandidate.score
+                )
+            ) {
+
+                fundamentalCandidate =
+                    candidate;
+
+            }
+
         }
+
+        if (
+            fundamentalCandidate &&
+            fundamentalCandidate.score >=
+            selected.score * 0.65
+        ) {
+
+            selected =
+                fundamentalCandidate;
+
+        }
+
     }
 
-    return frequency;
+    return selected.frequency;
 }
 function drawWaveform(buffer) {
 
@@ -309,6 +358,10 @@ function drawWaveform(buffer) {
     canvasContext.stroke();
 }
 
+let lastDetectedNote = null;
+let stableNote = null;
+let stableCount = 0;
+
 function processAudio() {
 
     const buffer =
@@ -331,13 +384,42 @@ function processAudio() {
         const note =
             frequencyToNote(frequency);
 
-        noteElement.textContent =
-            note;
+        if (note === lastDetectedNote) {
 
-        frequencyElement.textContent =
-            frequency.toFixed(1) +
-            " Hz";
+            stableCount++;
 
+        } else {
+
+            lastDetectedNote =
+                note;
+
+            stableCount = 1;
+        }
+
+        /*
+         * Confirmamos una nota después
+         * de varias lecturas consecutivas.
+         *
+         * Esto evita que un ruido breve
+         * cambie inmediatamente la nota.
+         */
+
+        if (stableCount >= 3) {
+
+            stableNote =
+                note;
+
+            noteElement.textContent =
+                stableNote;
+
+            frequencyElement.textContent =
+                frequency.toFixed(1) +
+                " Hz";
+        }
+
+    } else {
+
+        stableCount = 0;
     }
 
     animation =

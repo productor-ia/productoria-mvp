@@ -391,12 +391,19 @@ let lastRecordedNote = null;
 let recordingMelody = false;
 
 let detectedNotes = [];
+
 let lastStoredNote = null;
 let lastStoredTime = 0;
 
 let lastDetectedNote = null;
 let stableNote = null;
 let stableCount = 0;
+
+// Filtro de eventos musicales
+let candidateNote = null;
+let candidateSince = 0;
+
+const NOTE_CONFIRM_TIME = 120;
 function processAudio() {
 
     const buffer =
@@ -455,23 +462,56 @@ function processAudio() {
  * como melodía o acorde.
  */
 
+/*
+ * Filtro de eventos musicales.
+ *
+ * No guardamos continuamente la misma nota.
+ * Solo registramos una nota cuando:
+ *
+ * 1. Es diferente de la última registrada.
+ * 2. Permanece estable durante un pequeño
+ *    período de tiempo.
+ */
+
 const now = Date.now();
 
-if (
-    stableNote !== lastStoredNote ||
-    now - lastStoredTime > 300
-) {
+if (stableNote !== lastStoredNote) {
 
-    detectedNotes.push({
-        note: stableNote,
-        frequency: frequency,
-        time: now
-    });
+    // Apareció una posible nota nueva
+    if (candidateNote !== stableNote) {
 
-    lastStoredNote = stableNote;
-    lastStoredTime = now;
+        candidateNote = stableNote;
+        candidateSince = now;
+
+    }
+
+    // La nueva nota se mantuvo suficiente tiempo
+    if (
+        candidateNote === stableNote &&
+        now - candidateSince >= NOTE_CONFIRM_TIME
+    ) {
+
+        detectedNotes.push({
+            note: stableNote,
+            frequency: frequency,
+            time: now
+        });
+
+        lastStoredNote = stableNote;
+        lastStoredTime = now;
+
+        // Reiniciamos el candidato
+        candidateNote = null;
+        candidateSince = 0;
+    }
+
+} else {
+
+    // La nota sigue siendo la misma:
+    // no hacemos otro registro.
+    candidateNote = null;
+    candidateSince = 0;
 }
-
 /*
  * Conservamos solamente los últimos
  * 5 segundos de interpretación.
@@ -503,9 +543,11 @@ if (detectedNotes.length > 0) {
 
     } else {
 
-        stableCount = 0;
-    }
+    stableCount = 0;
 
+    candidateNote = null;
+    candidateSince = 0;
+}
     animation =
         requestAnimationFrame(
             processAudio

@@ -185,14 +185,16 @@ function detectPitch(buffer, sampleRate) {
 
     rms = Math.sqrt(rms / buffer.length);
 
-    if (rms < 0.01) {
+    // Umbral bajo para permitir detectar
+    // la 6ª cuerda aunque llegue débil al micrófono.
+    if (rms < 0.008) {
         return null;
     }
 
-    // Rango aproximado de detección:
-    // 60 Hz a 1200 Hz
-    const minFrequency = 60;
-    const maxFrequency = 1200;
+    // Rango de las seis cuerdas de una guitarra
+    // estándar: E2 (82.4 Hz) a E4 (329.6 Hz).
+    const minFrequency = 75;
+    const maxFrequency = 380;
 
     const minLag =
         Math.floor(sampleRate / maxFrequency);
@@ -200,16 +202,16 @@ function detectPitch(buffer, sampleRate) {
     const maxLag =
         Math.floor(sampleRate / minFrequency);
 
-    let bestCorrelation = 0;
     let bestLag = -1;
+    let bestScore = 0;
 
     for (
         let lag = minLag;
-        lag <= maxLag && lag < buffer.length / 2;
+        lag <= maxLag;
         lag++
     ) {
 
-        let correlation = 0;
+        let sum = 0;
         let energy1 = 0;
         let energy2 = 0;
 
@@ -222,33 +224,55 @@ function detectPitch(buffer, sampleRate) {
             const a = buffer[i];
             const b = buffer[i + lag];
 
-            correlation += a * b;
+            sum += a * b;
             energy1 += a * a;
             energy2 += b * b;
         }
 
-        if (energy1 === 0 || energy2 === 0) {
+        if (
+            energy1 === 0 ||
+            energy2 === 0
+        ) {
             continue;
         }
 
-        correlation /=
-            Math.sqrt(energy1 * energy2);
+        const score =
+            sum /
+            Math.sqrt(
+                energy1 * energy2
+            );
 
-        if (correlation > bestCorrelation) {
+        if (score > bestScore) {
 
-            bestCorrelation = correlation;
+            bestScore = score;
             bestLag = lag;
         }
     }
 
     if (
         bestLag === -1 ||
-        bestCorrelation < 0.25
+        bestScore < 0.20
     ) {
         return null;
     }
 
-    return sampleRate / bestLag;
+    let frequency =
+        sampleRate / bestLag;
+
+    // Corrección de subarmónico:
+    // evita interpretar D3 (~146.8 Hz)
+    // como D2 (~73.4 Hz).
+    if (frequency < 100) {
+
+        const doubled =
+            frequency * 2;
+
+        if (doubled <= maxFrequency) {
+            frequency = doubled;
+        }
+    }
+
+    return frequency;
 }
 function drawWaveform(buffer) {
 

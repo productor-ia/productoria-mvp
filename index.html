@@ -31,7 +31,6 @@ h1 {
   text-align: center;
   margin-bottom: 5px;
 }
-
 .subtitle {
   text-align: center;
   color: #9da3b0;
@@ -186,20 +185,33 @@ function detectPitch(buffer, sampleRate) {
 
     rms = Math.sqrt(rms / buffer.length);
 
-    if (rms < 0.015) {
+    if (rms < 0.01) {
         return null;
     }
+
+    // Rango aproximado de detección:
+    // 60 Hz a 1200 Hz
+    const minFrequency = 60;
+    const maxFrequency = 1200;
+
+    const minLag =
+        Math.floor(sampleRate / maxFrequency);
+
+    const maxLag =
+        Math.floor(sampleRate / minFrequency);
 
     let bestCorrelation = 0;
     let bestLag = -1;
 
     for (
-        let lag = 20;
-        lag < 1000;
+        let lag = minLag;
+        lag <= maxLag && lag < buffer.length / 2;
         lag++
     ) {
 
         let correlation = 0;
+        let energy1 = 0;
+        let energy2 = 0;
 
         for (
             let i = 0;
@@ -207,29 +219,37 @@ function detectPitch(buffer, sampleRate) {
             i++
         ) {
 
-            correlation +=
-                buffer[i] *
-                buffer[i + lag];
+            const a = buffer[i];
+            const b = buffer[i + lag];
+
+            correlation += a * b;
+            energy1 += a * a;
+            energy2 += b * b;
+        }
+
+        if (energy1 === 0 || energy2 === 0) {
+            continue;
         }
 
         correlation /=
-            buffer.length - lag;
+            Math.sqrt(energy1 * energy2);
 
         if (correlation > bestCorrelation) {
 
             bestCorrelation = correlation;
             bestLag = lag;
-
         }
     }
 
-    if (bestLag === -1) {
+    if (
+        bestLag === -1 ||
+        bestCorrelation < 0.25
+    ) {
         return null;
     }
 
     return sampleRate / bestLag;
 }
-
 function drawWaveform(buffer) {
 
     canvasContext.clearRect(

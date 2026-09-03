@@ -98,6 +98,25 @@ canvas {
   color: #b8bec9;
   line-height: 1.5;
 }
+ .melody {
+  margin-top: 20px;
+  padding: 18px;
+  background: #11141b;
+  border-radius: 15px;
+}
+
+.melody-title {
+  color: #9da3b0;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.melody-notes {
+  font-size: 22px;
+  font-weight: bold;
+  line-height: 1.6;
+  word-break: break-word;
+} 
 </style>
 </head>
 
@@ -134,7 +153,15 @@ Toca una nota
 <button id="stop" class="stop" disabled>
 Detener
 </button>
+<div class="melody">
+    <div class="melody-title">
+        Melodía detectada
+    </div>
 
+    <div id="melodyNotes" class="melody-notes">
+        —
+    </div>
+</div>
 <div class="info">
 <b>Primera prueba</b><br><br>
 ProductorIA está intentando escuchar tu instrumento
@@ -161,7 +188,8 @@ const noteNames = [
 const noteElement = document.getElementById("note");
 const frequencyElement = document.getElementById("frequency");
 const statusElement = document.getElementById("status");
-
+const melodyElement =
+    document.getElementById("melodyNotes");
 const canvas = document.getElementById("wave");
 const canvasContext = canvas.getContext("2d");
 
@@ -358,10 +386,17 @@ function drawWaveform(buffer) {
     canvasContext.stroke();
 }
 
+let melody = [];
+let lastRecordedNote = null;
+let recordingMelody = false;
+
+let detectedNotes = [];
+let lastStoredNote = null;
+let lastStoredTime = 0;
+
 let lastDetectedNote = null;
 let stableNote = null;
 let stableCount = 0;
-
 function processAudio() {
 
     const buffer =
@@ -414,7 +449,56 @@ function processAudio() {
 
             frequencyElement.textContent =
                 frequency.toFixed(1) +
-                " Hz";
+                " Hz";/*
+ * Guardamos las notas detectadas
+ * para poder analizarlas posteriormente
+ * como melodía o acorde.
+ */
+
+const now = Date.now();
+
+if (
+    stableNote !== lastStoredNote ||
+    now - lastStoredTime > 300
+) {
+
+    detectedNotes.push({
+        note: stableNote,
+        frequency: frequency,
+        time: now
+    });
+
+    lastStoredNote = stableNote;
+    lastStoredTime = now;
+}
+
+/*
+ * Conservamos solamente los últimos
+ * 5 segundos de interpretación.
+ */
+
+detectedNotes =
+    detectedNotes.filter(
+        item =>
+            now - item.time < 5000
+    );
+          /*
+ * Mostramos las notas detectadas
+ * durante los últimos 5 segundos.
+ */
+
+if (detectedNotes.length > 0) {
+
+    melodyElement.textContent =
+        detectedNotes
+        .map(item => item.note)
+        .join(" → ");
+
+} else {
+
+    melodyElement.textContent =
+        "—";
+}
         }
 
     } else {

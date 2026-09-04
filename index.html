@@ -332,13 +332,17 @@ function centsDifference(
 
 
 /* =========================================
-   DETECTOR DE PITCH
+   DETECTOR DE PITCH — VERSIÓN OPTIMIZADA
 ========================================= */
 
 function detectPitch(
     buffer,
     sampleRate
 ) {
+
+    /* =====================================
+       1. COMPROBAR NIVEL DE SEÑAL
+    ===================================== */
 
     let rms = 0;
 
@@ -368,12 +372,9 @@ function detectPitch(
     }
 
 
-    /*
-     * Rango general de guitarra.
-     *
-     * E2 ≈ 82 Hz
-     * E4 ≈ 330 Hz
-     */
+    /* =====================================
+       2. RANGO MUSICAL
+    ===================================== */
 
     const minFrequency = 75;
     const maxFrequency = 380;
@@ -392,17 +393,26 @@ function detectPitch(
         );
 
 
-    let candidates = [];
+    /* =====================================
+       3. AUTOCORRELACIÓN EN DOS ETAPAS
+       
+       Primero hacemos una búsqueda gruesa.
+       Después refinamos los mejores candidatos.
+    ===================================== */
+
+    const COARSE_STEP = 4;
+
+    const coarseCandidates = [];
 
 
-    /*
-     * Autocorrelación normalizada.
-     */
+    /* =====================================
+       4. BÚSQUEDA GRUESA
+    ===================================== */
 
     for (
         let lag = minLag;
         lag <= maxLag;
-        lag++
+        lag += COARSE_STEP
     ) {
 
         let sum = 0;
@@ -413,7 +423,7 @@ function detectPitch(
         for (
             let i = 0;
             i < buffer.length - lag;
-            i++
+            i += COARSE_STEP
         ) {
 
             const a =
@@ -455,14 +465,158 @@ function detectPitch(
             score > 0.20
         ) {
 
-            candidates.push({
+            coarseCandidates.push({
 
-                frequency:
-                    sampleRate /
+                lag:
                     lag,
 
                 score:
                     score
+            });
+        }
+    }
+
+
+    if (
+        coarseCandidates.length === 0
+    ) {
+
+        return null;
+    }
+
+
+    /* =====================================
+       5. ORDENAR CANDIDATOS
+    ===================================== */
+
+    coarseCandidates.sort(
+        (a, b) =>
+            b.score -
+            a.score
+    );
+
+
+    /* =====================================
+       6. REFINAR LOS MEJORES CANDIDATOS
+    ===================================== */
+
+    const candidates = [];
+
+    const MAX_REFINED =
+        Math.min(
+            12,
+            coarseCandidates.length
+        );
+
+
+    for (
+        let c = 0;
+        c < MAX_REFINED;
+        c++
+    ) {
+
+        const baseLag =
+            coarseCandidates[c].lag;
+
+
+        const startLag =
+            Math.max(
+                minLag,
+                baseLag - COARSE_STEP
+            );
+
+
+        const endLag =
+            Math.min(
+                maxLag,
+                baseLag + COARSE_STEP
+            );
+
+
+        let bestLag =
+            baseLag;
+
+        let bestScore =
+            -1;
+
+
+        for (
+            let lag = startLag;
+            lag <= endLag;
+            lag++
+        ) {
+
+            let sum = 0;
+            let energy1 = 0;
+            let energy2 = 0;
+
+
+            for (
+                let i = 0;
+                i < buffer.length - lag;
+                i += 2
+            ) {
+
+                const a =
+                    buffer[i];
+
+                const b =
+                    buffer[i + lag];
+
+
+                sum +=
+                    a * b;
+
+                energy1 +=
+                    a * a;
+
+                energy2 +=
+                    b * b;
+            }
+
+
+            if (
+                energy1 === 0 ||
+                energy2 === 0
+            ) {
+
+                continue;
+            }
+
+
+            const score =
+                sum /
+                Math.sqrt(
+                    energy1 *
+                    energy2
+                );
+
+
+            if (
+                score > bestScore
+            ) {
+
+                bestScore =
+                    score;
+
+                bestLag =
+                    lag;
+            }
+        }
+
+
+        if (
+            bestScore > 0.20
+        ) {
+
+            candidates.push({
+
+                frequency:
+                    sampleRate /
+                    bestLag,
+
+                score:
+                    bestScore
             });
         }
     }
@@ -476,6 +630,10 @@ function detectPitch(
     }
 
 
+    /* =====================================
+       7. ORDENAR POR CALIDAD
+    ===================================== */
+
     candidates.sort(
         (a, b) =>
             b.score -
@@ -483,7 +641,116 @@ function detectPitch(
     );
 
 
+    /* =====================================
+       8. SELECCIÓN DE FUNDAMENTAL
+    ===================================== */
+
+    let selected =
+        candidates[0];
+
+
     /*
+     * -------------------------------------
+     * CORREÇÃO POR DOBRO
+     * -------------------------------------
+     *
+     * Exemplo:
+     *
+     * detecção:
+     * 123 Hz
+     *
+     * fundamental real:
+     * 246 Hz
+     *
+     * Procuramos um candidato próximo
+     * do dobro da frequência.
+     */
+
+    const doubleFrequency =
+        selected.frequency * 2;
+
+
+    for (
+        const candidate of candidates
+    ) {
+
+        const difference =
+            Math.abs(
+                candidate.frequency -
+                doubleFrequency
+            );
+
+
+        if (
+            difference <= 4 &&
+            candidate.score >=
+                selected.score * 0.50
+        ) {
+
+            selected =
+                candidate;
+
+            break;
+        }
+    }
+
+
+    /*
+     * -------------------------------------
+     * CORREÇÃO POR TRIPLO
+     * -------------------------------------
+     *
+     * Exemplo:
+     *
+     * detecção:
+     * ~73 Hz
+     *
+     * fundamental:
+     * ~220 Hz
+     */
+
+    const tripleFrequency =
+        selected.frequency * 3;
+
+
+    for (
+        const candidate of candidates
+    ) {
+
+        const difference =
+            Math.abs(
+                candidate.frequency -
+                tripleFrequency
+            );
+
+
+        if (
+            difference <= 4 &&
+            candidate.score >=
+                selected.score * 0.50
+        ) {
+
+            selected =
+                candidate;
+
+            break;
+        }
+    }
+
+
+    /* =====================================
+       9. RESULTADO
+    ===================================== */
+
+    return {
+
+        frequency:
+            selected.frequency,
+
+        score:
+            selected.score
+    };
+}
      * =====================================
      * SELECCIÓN DE FUNDAMENTAL
      * =====================================

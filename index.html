@@ -180,9 +180,9 @@ let microphone;
 let stream;
 let animation;
 
-/* ================================
+/* =========================================
    CONFIGURACIÓN
-================================ */
+========================================= */
 
 const noteNames = [
     "C", "C♯", "D", "D♯", "E", "F",
@@ -192,31 +192,38 @@ const noteNames = [
 const RMS_THRESHOLD = 0.008;
 
 /*
- * Cuántas lecturas consecutivas necesita
- * una nota para ser confirmada.
+ * Cantidad de lecturas consecutivas necesarias
+ * para aceptar una nueva nota.
  */
-const STABILITY_REQUIRED = 3;
+const STABILITY_REQUIRED = 5;
 
 /*
- * Tiempo de silencio necesario para considerar
- * que una nota terminó.
+ * Una nota debe diferenciarse suficientemente
+ * de la nota activa para ser considerada nueva.
  */
-const RELEASE_TIME = 90;
+const MIN_NOTE_CHANGE_CENTS = 45;
 
 /*
- * Tiempo mínimo entre dos registros.
+ * Tiempo mínimo durante el cual una nueva
+ * frecuencia debe demostrar estabilidad.
  */
-const RETRIGGER_TIME = 80;
+const NEW_NOTE_TIME = 90;
 
 /*
- * Conservamos los últimos 5 segundos.
+ * Tiempo de silencio necesario para liberar
+ * completamente una nota.
+ */
+const RELEASE_TIME = 120;
+
+/*
+ * Ventana de melodía visible.
  */
 const MELODY_WINDOW = 5000;
 
 
-/* ================================
-   ELEMENTOS HTML
-================================ */
+/* =========================================
+   ELEMENTOS
+========================================= */
 
 const noteElement =
     document.getElementById("note");
@@ -237,33 +244,51 @@ const canvasContext =
     canvas.getContext("2d");
 
 
-/* ================================
-   ESTADO DEL DETECTOR
-================================ */
-
-let candidateNote = null;
-let candidateCount = 0;
+/* =========================================
+   ESTADO
+========================================= */
 
 let activeNote = null;
 let activeFrequency = null;
 
+let candidateNote = null;
+let candidateFrequency = null;
+let candidateCount = 0;
+let candidateStarted = null;
+
 let silenceStarted = null;
-let lastRecordedTime = 0;
 
 let detectedNotes = [];
+let lastRecordedTime = 0;
 
 
-/* ================================
-   FRECUENCIA → NOTA
-================================ */
+/* =========================================
+   UTILIDADES MUSICALES
+========================================= */
 
+/*
+ * Convierte frecuencia a MIDI.
+ */
+function frequencyToMidi(frequency) {
+
+    return (
+        69 +
+        12 *
+        Math.log2(
+            frequency / 440
+        )
+    );
+}
+
+
+/*
+ * Convierte frecuencia a nota.
+ */
 function frequencyToNote(frequency) {
 
     const midi =
         Math.round(
-            69 +
-            12 *
-            Math.log2(frequency / 440)
+            frequencyToMidi(frequency)
         );
 
     return noteNames[
@@ -272,11 +297,41 @@ function frequencyToNote(frequency) {
 }
 
 
-/* ================================
-   DETECTOR DE PITCH
-================================ */
+/*
+ * Distancia entre dos frecuencias
+ * expresada en cents.
+ */
+function centsDifference(
+    frequency1,
+    frequency2
+) {
 
-function detectPitch(buffer, sampleRate) {
+    if (
+        !frequency1 ||
+        !frequency2
+    ) {
+
+        return Infinity;
+    }
+
+    return Math.abs(
+        1200 *
+        Math.log2(
+            frequency1 /
+            frequency2
+        )
+    );
+}
+
+
+/* =========================================
+   DETECTOR DE PITCH
+========================================= */
+
+function detectPitch(
+    buffer,
+    sampleRate
+) {
 
     let rms = 0;
 
@@ -293,30 +348,49 @@ function detectPitch(buffer, sampleRate) {
 
     rms =
         Math.sqrt(
-            rms / buffer.length
+            rms /
+            buffer.length
         );
 
-    if (rms < RMS_THRESHOLD) {
+
+    if (
+        rms < RMS_THRESHOLD
+    ) {
+
         return null;
     }
 
 
+    /*
+     * Rango general de guitarra.
+     *
+     * E2 ≈ 82 Hz
+     * E4 ≈ 330 Hz
+     */
+
     const minFrequency = 75;
     const maxFrequency = 380;
 
+
     const minLag =
         Math.floor(
-            sampleRate / maxFrequency
+            sampleRate /
+            maxFrequency
         );
 
     const maxLag =
         Math.floor(
-            sampleRate / minFrequency
+            sampleRate /
+            minFrequency
         );
 
 
     let candidates = [];
 
+
+    /*
+     * Autocorrelación normalizada.
+     */
 
     for (
         let lag = minLag;
@@ -335,10 +409,15 @@ function detectPitch(buffer, sampleRate) {
             i++
         ) {
 
-            const a = buffer[i];
-            const b = buffer[i + lag];
+            const a =
+                buffer[i];
 
-            sum += a * b;
+            const b =
+                buffer[i + lag];
+
+
+            sum +=
+                a * b;
 
             energy1 +=
                 a * a;
@@ -352,6 +431,7 @@ function detectPitch(buffer, sampleRate) {
             energy1 === 0 ||
             energy2 === 0
         ) {
+
             continue;
         }
 
@@ -364,11 +444,15 @@ function detectPitch(buffer, sampleRate) {
             );
 
 
-        if (score > 0.20) {
+        if (
+            score > 0.20
+        ) {
 
             candidates.push({
+
                 frequency:
-                    sampleRate / lag,
+                    sampleRate /
+                    lag,
 
                 score:
                     score
@@ -387,80 +471,112 @@ function detectPitch(buffer, sampleRate) {
 
     candidates.sort(
         (a, b) =>
-            b.score - a.score
+            b.score -
+            a.score
     );
 
+
+    /*
+     * =====================================
+     * SELECCIÓN DE FUNDAMENTAL
+     * =====================================
+     *
+     * En vez de aceptar ciegamente
+     * el candidato con mayor score,
+     * buscamos también posibles
+     * subarmónicos.
+     */
 
     let selected =
         candidates[0];
 
 
     /*
-     * Corrección específica de armónicos.
-     *
-     * Si detectamos aproximadamente E3
-     * (164.8 Hz), buscamos E2
-     * (82.4 Hz).
+     * Buscar un candidato que sea
+     * aproximadamente la mitad de
+     * la frecuencia seleccionada.
      */
 
-    if (
-        selected.frequency >= 150 &&
-        selected.frequency <= 180
+    const half =
+        selected.frequency / 2;
+
+
+    for (
+        const candidate
+        of candidates
     ) {
 
-        const fundamental =
-            selected.frequency / 2;
-
-        let fundamentalCandidate =
-            null;
-
-
-        for (
-            const candidate
-            of candidates
-        ) {
-
-            const difference =
-                Math.abs(
-                    candidate.frequency -
-                    fundamental
-                );
-
-
-            if (
-                difference <= 2 &&
-                (
-                    fundamentalCandidate === null ||
-                    candidate.score >
-                    fundamentalCandidate.score
-                )
-            ) {
-
-                fundamentalCandidate =
-                    candidate;
-            }
-        }
+        const difference =
+            Math.abs(
+                candidate.frequency -
+                half
+            );
 
 
         if (
-            fundamentalCandidate &&
-            fundamentalCandidate.score >=
-            selected.score * 0.65
+            difference <= 2 &&
+            candidate.score >=
+            selected.score * 0.55
         ) {
 
             selected =
-                fundamentalCandidate;
+                candidate;
+
+            break;
         }
     }
 
 
-    return selected.frequency;
+    /*
+     * Segundo nivel de comprobación:
+     * si existe un candidato que sea
+     * aproximadamente 1/3 de la frecuencia.
+     */
+
+    const third =
+        selected.frequency / 3;
+
+
+    for (
+        const candidate
+        of candidates
+    ) {
+
+        const difference =
+            Math.abs(
+                candidate.frequency -
+                third
+            );
+
+
+        if (
+            difference <= 2 &&
+            candidate.score >=
+            selected.score * 0.50
+        ) {
+
+            selected =
+                candidate;
+
+            break;
+        }
+    }
+
+
+    return {
+
+        frequency:
+            selected.frequency,
+
+        score:
+            selected.score
+    };
 }
 
 
-/* ================================
+/* =========================================
    ONDA
-================================ */
+========================================= */
 
 function drawWaveform(buffer) {
 
@@ -471,7 +587,9 @@ function drawWaveform(buffer) {
         canvas.height
     );
 
+
     canvasContext.beginPath();
+
 
     for (
         let i = 0;
@@ -491,7 +609,9 @@ function drawWaveform(buffer) {
             2;
 
 
-        if (i === 0) {
+        if (
+            i === 0
+        ) {
 
             canvasContext.moveTo(
                 x,
@@ -507,13 +627,14 @@ function drawWaveform(buffer) {
         }
     }
 
+
     canvasContext.stroke();
 }
 
 
-/* ================================
+/* =========================================
    REGISTRAR NOTA
-================================ */
+========================================= */
 
 function recordNote(
     note,
@@ -522,12 +643,14 @@ function recordNote(
 ) {
 
     /*
-     * Evitamos registros demasiado juntos.
+     * No registrar dos eventos
+     * prácticamente simultáneos.
      */
 
     if (
-        now - lastRecordedTime <
-        RETRIGGER_TIME
+        now -
+        lastRecordedTime <
+        100
     ) {
 
         return;
@@ -552,44 +675,102 @@ function recordNote(
 
 
     /*
-     * Eliminamos notas antiguas.
+     * Mantener solamente
+     * los últimos 5 segundos.
      */
 
     detectedNotes =
         detectedNotes.filter(
             item =>
-                now - item.time <
+                now -
+                item.time <
                 MELODY_WINDOW
         );
 
 
-    /*
-     * Mostramos la melodía.
-     */
-
-    if (
-        detectedNotes.length > 0
-    ) {
-
-        melodyElement.textContent =
-            detectedNotes
-                .map(
-                    item =>
-                        item.note
-                )
-                .join(" → ");
-
-    } else {
-
-        melodyElement.textContent =
-            "—";
-    }
+    updateMelody();
 }
 
 
-/* ================================
-   PROCESAMIENTO PRINCIPAL
-================================ */
+/* =========================================
+   MOSTRAR MELODÍA
+========================================= */
+
+function updateMelody() {
+
+    if (
+        detectedNotes.length === 0
+    ) {
+
+        melodyElement.textContent =
+            "—";
+
+        return;
+    }
+
+
+    melodyElement.textContent =
+        detectedNotes
+            .map(
+                item =>
+                    item.note
+            )
+            .join(
+                " → "
+            );
+}
+
+
+/* =========================================
+   ACEPTAR NUEVA NOTA
+========================================= */
+
+function acceptNewNote(
+    note,
+    frequency,
+    now
+) {
+
+    activeNote =
+        note;
+
+    activeFrequency =
+        frequency;
+
+
+    noteElement.textContent =
+        note;
+
+
+    frequencyElement.textContent =
+        frequency.toFixed(1) +
+        " Hz";
+
+
+    recordNote(
+        note,
+        frequency,
+        now
+    );
+
+
+    candidateNote =
+        null;
+
+    candidateFrequency =
+        null;
+
+    candidateCount =
+        0;
+
+    candidateStarted =
+        null;
+}
+
+
+/* =========================================
+   PROCESAMIENTO DE AUDIO
+========================================= */
 
 function processAudio() {
 
@@ -607,7 +788,7 @@ function processAudio() {
     drawWaveform(buffer);
 
 
-    const frequency =
+    const result =
         detectPitch(
             buffer,
             audioContext.sampleRate
@@ -618,15 +799,17 @@ function processAudio() {
         Date.now();
 
 
-    /* ============================
-       NO HAY SEÑAL
-    ============================ */
+    /* =====================================
+       SIN SEÑAL
+    ===================================== */
 
-    if (!frequency) {
+    if (
+        result === null
+    ) {
 
         /*
-         * Si había una nota activa,
-         * comenzamos a medir silencio.
+         * Si existe una nota activa,
+         * iniciamos contador de silencio.
          */
 
         if (
@@ -640,14 +823,15 @@ function processAudio() {
 
 
         /*
-         * Si el silencio dura suficiente,
+         * Después de suficiente silencio,
          * liberamos la nota.
          */
 
         if (
             activeNote !== null &&
             silenceStarted !== null &&
-            now - silenceStarted >=
+            now -
+            silenceStarted >=
             RELEASE_TIME
         ) {
 
@@ -660,8 +844,14 @@ function processAudio() {
             candidateNote =
                 null;
 
+            candidateFrequency =
+                null;
+
             candidateCount =
                 0;
+
+            candidateStarted =
+                null;
 
             silenceStarted =
                 null;
@@ -677,13 +867,16 @@ function processAudio() {
     }
 
 
-    /* ============================
-       HAY SEÑAL
-    ============================ */
+    /* =====================================
+       TENEMOS SEÑAL
+    ===================================== */
 
     silenceStarted =
         null;
 
+
+    const frequency =
+        result.frequency;
 
     const note =
         frequencyToNote(
@@ -691,14 +884,74 @@ function processAudio() {
         );
 
 
-    /* ============================
-       TODAVÍA ESTAMOS EN LA MISMA
-       NOTA
-    ============================ */
+    /* =====================================
+       NO EXISTE NOTA ACTIVA
+    ===================================== */
 
     if (
-        activeNote === note
+        activeNote === null
     ) {
+
+        if (
+            candidateNote === note
+        ) {
+
+            candidateCount++;
+
+        } else {
+
+            candidateNote =
+                note;
+
+            candidateFrequency =
+                frequency;
+
+            candidateCount =
+                1;
+
+            candidateStarted =
+                now;
+        }
+
+
+        if (
+            candidateCount >=
+            STABILITY_REQUIRED &&
+            now -
+            candidateStarted >=
+            NEW_NOTE_TIME
+        ) {
+
+            acceptNewNote(
+                note,
+                frequency,
+                now
+            );
+        }
+
+
+        animation =
+            requestAnimationFrame(
+                processAudio
+            );
+
+        return;
+    }
+
+
+    /* =====================================
+       MISMA NOTA
+    ===================================== */
+
+    if (
+        note === activeNote
+    ) {
+
+        /*
+         * Actualizamos la frecuencia
+         * visual, pero NO creamos
+         * otro evento.
+         */
 
         activeFrequency =
             frequency;
@@ -713,6 +966,19 @@ function processAudio() {
             " Hz";
 
 
+        candidateNote =
+            null;
+
+        candidateFrequency =
+            null;
+
+        candidateCount =
+            0;
+
+        candidateStarted =
+            null;
+
+
         animation =
             requestAnimationFrame(
                 processAudio
@@ -722,9 +988,40 @@ function processAudio() {
     }
 
 
-    /* ============================
-       NUEVA NOTA CANDIDATA
-    ============================ */
+    /* =====================================
+       POSIBLE NUEVA NOTA
+    ===================================== */
+
+    const change =
+        centsDifference(
+            frequency,
+            activeFrequency
+        );
+
+
+    /*
+     * Si la diferencia es pequeña,
+     * probablemente es simplemente
+     * vibración / afinación / ruido.
+     */
+
+    if (
+        change <
+        MIN_NOTE_CHANGE_CENTS
+    ) {
+
+        animation =
+            requestAnimationFrame(
+                processAudio
+            );
+
+        return;
+    }
+
+
+    /* =====================================
+       CANDIDATA A NUEVA NOTA
+    ===================================== */
 
     if (
         candidateNote === note
@@ -732,66 +1029,69 @@ function processAudio() {
 
         candidateCount++;
 
+
+        /*
+         * Suavizado de frecuencia.
+         */
+
+        candidateFrequency =
+            (
+                candidateFrequency +
+                frequency
+            ) / 2;
+
     } else {
 
         candidateNote =
             note;
 
+        candidateFrequency =
+            frequency;
+
         candidateCount =
             1;
+
+        candidateStarted =
+            now;
     }
 
 
-    /* ============================
-       CONFIRMAR NUEVA NOTA
-    ============================ */
+    /* =====================================
+       CONFIRMAR CAMBIO
+    ===================================== */
 
     if (
         candidateCount >=
-        STABILITY_REQUIRED
+        STABILITY_REQUIRED &&
+        now -
+        candidateStarted >=
+        NEW_NOTE_TIME
     ) {
 
         /*
-         * La nueva nota queda activa.
+         * Antes de aceptar la nueva nota,
+         * comprobamos nuevamente que
+         * realmente sea distinta.
          */
 
-        activeNote =
-            note;
-
-        activeFrequency =
-            frequency;
-
-
-        noteElement.textContent =
-            note;
+        const finalDifference =
+            centsDifference(
+                candidateFrequency,
+                activeFrequency
+            );
 
 
-        frequencyElement.textContent =
-            frequency.toFixed(1) +
-            " Hz";
+        if (
+            finalDifference >=
+            MIN_NOTE_CHANGE_CENTS
+        ) {
 
-
-        /*
-         * La registramos solamente
-         * una vez.
-         */
-
-        recordNote(
-            note,
-            frequency,
-            now
-        );
-
-
-        /*
-         * Reiniciamos candidato.
-         */
-
-        candidateNote =
-            null;
-
-        candidateCount =
-            0;
+            acceptNewNote(
+                candidateNote,
+                candidateFrequency,
+                now
+            );
+        }
     }
 
 
@@ -802,9 +1102,9 @@ function processAudio() {
 }
 
 
-/* ================================
+/* =========================================
    ACTIVAR MICRÓFONO
-================================ */
+========================================= */
 
 document
 .getElementById("start")
@@ -862,20 +1162,25 @@ document
 
 
             /*
-             * Reiniciamos el estado
-             * de la interpretación.
+             * Reiniciar estado.
              */
-
-            candidateNote =
-                null;
-
-            candidateCount =
-                0;
 
             activeNote =
                 null;
 
             activeFrequency =
+                null;
+
+            candidateNote =
+                null;
+
+            candidateFrequency =
+                null;
+
+            candidateCount =
+                0;
+
+            candidateStarted =
                 null;
 
             silenceStarted =
@@ -924,9 +1229,9 @@ document
 );
 
 
-/* ================================
+/* =========================================
    DETENER
-================================ */
+========================================= */
 
 document
 .getElementById("stop")
@@ -959,11 +1264,20 @@ document
         activeNote =
             null;
 
+        activeFrequency =
+            null;
+
         candidateNote =
+            null;
+
+        candidateFrequency =
             null;
 
         candidateCount =
             0;
+
+        candidateStarted =
+            null;
 
         silenceStarted =
             null;

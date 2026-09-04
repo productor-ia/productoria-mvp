@@ -285,15 +285,22 @@ function frequencyToMidi(frequency) {
  * Convierte frecuencia a nota.
  */
 function frequencyToNote(frequency) {
+  if (!frequency || frequency <= 0) {
+    return null;
+  }
 
-    const midi =
-        Math.round(
-            frequencyToMidi(frequency)
-        );
+  const midi = Math.round(
+    69 + 12 * Math.log2(frequency / 440)
+  );
 
-    return noteNames[
-        (midi % 12 + 12) % 12
-    ];
+  const noteNames = [
+    "C", "C#", "D", "D#", "E", "F",
+    "F#", "G", "G#", "A", "A#", "B"
+  ];
+
+  const note = noteNames[(midi % 12 + 12) % 12];
+
+  return note;
 }
 
 
@@ -488,91 +495,91 @@ function detectPitch(
      */
 
     let selected =
-        candidates[0];
+  candidates[0];
 
+/*
+ * ============================================================
+ * SELECCIÓN DEL FUNDAMENTAL
+ * ============================================================
+ *
+ * La autocorrelación puede detectar una frecuencia inferior
+ * al fundamental real:
+ *
+ *   fundamental real → 246 Hz
+ *   detección errónea → 123 Hz
+ *
+ * En ese caso debemos buscar el DOBLE de la frecuencia
+ * detectada, no la mitad.
+ *
+ * También comprobamos el TRIPLE para casos como:
+ *
+ *   fundamental real → 220 Hz
+ *   detección errónea → 73 Hz
+ *
+ * No modificamos automáticamente la frecuencia.
+ * Solo corregimos si existe otro candidato suficientemente
+ * cercano y con un score razonablemente fuerte.
+ */
 
-    /*
-     * Buscar un candidato que sea
-     * aproximadamente la mitad de
-     * la frecuencia seleccionada.
-     */
+/*
+ * Buscar candidato aproximadamente al doble.
+ */
+const doubleFrequency =
+  selected.frequency * 2;
 
-    const half =
-        selected.frequency / 2;
+for (const candidate of candidates) {
 
+  const difference =
+    Math.abs(
+      candidate.frequency -
+      doubleFrequency
+    );
 
-    for (
-        const candidate
-        of candidates
-    ) {
-
-        const difference =
-            Math.abs(
-                candidate.frequency -
-                half
-            );
-
-
-        if (
-            difference <= 2 &&
-            candidate.score >=
-            selected.score * 0.55
-        ) {
-
-            selected =
-                candidate;
-
-            break;
-        }
-    }
-
-
-    /*
-     * Segundo nivel de comprobación:
-     * si existe un candidato que sea
-     * aproximadamente 1/3 de la frecuencia.
-     */
-
-    const third =
-        selected.frequency / 3;
-
-
-    for (
-        const candidate
-        of candidates
-    ) {
-
-        const difference =
-            Math.abs(
-                candidate.frequency -
-                third
-            );
-
-
-        if (
-            difference <= 2 &&
-            candidate.score >=
-            selected.score * 0.50
-        ) {
-
-            selected =
-                candidate;
-
-            break;
-        }
-    }
-
-
-    return {
-
-        frequency:
-            selected.frequency,
-
-        score:
-            selected.score
-    };
+  if (
+    difference <= 3 &&
+    candidate.score >=
+      selected.score * 0.50
+  ) {
+    selected = candidate;
+    break;
+  }
 }
 
+/*
+ * Buscar candidato aproximadamente al triple.
+ *
+ * Esto permite recuperar el fundamental cuando la
+ * autocorrelación se ha enganchado en aproximadamente
+ * 1/3 de la frecuencia real.
+ */
+const tripleFrequency =
+  selected.frequency * 3;
+
+for (const candidate of candidates) {
+
+  const difference =
+    Math.abs(
+      candidate.frequency -
+      tripleFrequency
+    );
+
+  if (
+    difference <= 3 &&
+    candidate.score >=
+      selected.score * 0.50
+  ) {
+    selected = candidate;
+    break;
+  }
+}
+
+return {
+  frequency:
+    selected.frequency,
+
+  score:
+    selected.score
+};
 
 /* =========================================
    ONDA

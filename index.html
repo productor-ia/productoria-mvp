@@ -1,228 +1,206 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>ProductorIA</title>
+<title>ProductorIA — Asistente Compositor</title>
 
 <style>
-
 * {
     box-sizing: border-box;
 }
 
-body {
-
-    margin: 0;
-
-    min-height: 100vh;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
+html {
     background: #101218;
+}
 
-    color: white;
-
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #101218;
+    color: #ffffff;
     display: flex;
-
     justify-content: center;
 }
 
 .app {
-
     width: 100%;
-
     max-width: 700px;
-
-    padding:
-        30px 20px 60px;
+    padding: 30px 20px 60px;
 }
 
 h1 {
-
     text-align: center;
-
-    margin:
-        0 0 5px;
+    margin: 0 0 5px;
+    font-size: 34px;
 }
 
 .subtitle {
-
     text-align: center;
-
     color: #9da3b0;
-
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .card {
-
     background: #191c24;
-
-    border:
-        1px solid #303541;
-
+    border: 1px solid #303541;
     border-radius: 22px;
+    padding: 22px;
+}
 
-    padding: 25px;
+.section {
+    margin-top: 20px;
+    padding: 20px;
+    background: #11141b;
+    border-radius: 17px;
 }
 
 .status {
-
     text-align: center;
-
     color: #9da3b0;
-
-    min-height: 24px;
+    font-size: 16px;
+    margin-bottom: 10px;
 }
 
 .note {
-
     text-align: center;
-
-    font-size: 80px;
-
+    font-size: 78px;
+    line-height: 1;
     font-weight: bold;
-
-    margin:
-        35px 0 10px;
+    margin: 25px 0 8px;
 }
 
 .frequency {
-
     text-align: center;
-
     color: #aeb4c0;
+    min-height: 24px;
+}
+
+canvas {
+    width: 100%;
+    height: 100px;
+    margin-top: 22px;
+    background: #0d1016;
+    border-radius: 14px;
+    display: block;
 }
 
 button {
-
     width: 100%;
-
     padding: 16px;
-
-    margin-top: 15px;
-
+    margin-top: 14px;
     border: none;
-
     border-radius: 14px;
-
     font-size: 17px;
-
     font-weight: bold;
-
     cursor: pointer;
 }
 
 button:disabled {
-
-    opacity: 0.55;
-
+    opacity: 0.45;
     cursor: default;
 }
 
-.start {
-
-    background: white;
-
-    color: #111;
+.primary {
+    background: #ffffff;
+    color: #111111;
 }
 
-.stop {
-
+.secondary {
     background: #292e39;
-
-    color: white;
+    color: #ffffff;
 }
 
-canvas {
-
-    display: block;
-
-    width: 100%;
-
-    height: 100px;
-
-    margin-top: 25px;
-
-    background: #101218;
-
-    border-radius: 14px;
+.calibration {
+    border: 1px solid #353b48;
 }
 
-.melody,
-.chord-box {
-
-    margin-top: 20px;
-
-    padding: 18px;
-
-    background: #11141b;
-
-    border-radius: 15px;
+.calibration-title {
+    font-size: 21px;
+    font-weight: bold;
+    margin-bottom: 8px;
 }
 
-.melody-title {
+.calibration-description {
+    color: #aeb4c0;
+    line-height: 1.5;
+    margin-bottom: 18px;
+}
 
-    color: #9da3b0;
+.calibration-step {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
 
+.calibration-progress {
+    color: #8f96a4;
     font-size: 14px;
-
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
-.melody-notes {
-
-    font-size: 22px;
-
-    font-weight: bold;
-
-    line-height: 1.6;
-
-    word-break: break-word;
-
-    min-height: 35px;
-}
-
-.chord-name {
-
-    font-size: 32px;
-
-    font-weight: bold;
-
-    text-align: center;
-
-    padding: 10px 0;
-
-    min-height: 60px;
-}
-
-.info {
-
-    margin-top: 25px;
-
-    padding: 18px;
-
-    background: #11141b;
-
-    border-radius: 15px;
-
-    color: #b8bec9;
-
+.calibration-result {
+    margin-top: 14px;
+    color: #aeb4c0;
     line-height: 1.5;
 }
 
-</style>
+.profile-ok {
+    color: #ffffff;
+    font-weight: bold;
+}
 
+.melody-title {
+    color: #9da3b0;
+    font-size: 15px;
+    margin-bottom: 12px;
+}
+
+.melody-notes {
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.6;
+    word-break: break-word;
+}
+
+.chord-name {
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+    padding: 12px 0;
+    min-height: 75px;
+}
+
+.info {
+    margin-top: 20px;
+    padding: 20px;
+    background: #11141b;
+    border-radius: 17px;
+    color: #b8bec9;
+    line-height: 1.55;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.small {
+    font-size: 14px;
+    color: #8f96a4;
+}
+
+.profile-data {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    background: #191d26;
+    color: #aeb4c0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+</style>
 </head>
 
 <body>
@@ -237,104 +215,153 @@ canvas {
 
 <div class="card">
 
-<div
-    id="status"
-    class="status"
->
+<!-- =====================================================
+     ESTADO
+===================================================== -->
+
+<div id="status" class="status">
     Micrófono detenido
 </div>
 
-<div
-    id="note"
-    class="note"
->
+<div id="note" class="note">
     —
 </div>
 
-<div
-    id="frequency"
-    class="frequency"
->
+<div id="frequency" class="frequency">
     Toca una nota
 </div>
 
 <canvas id="wave"></canvas>
 
-<button
-    id="start"
-    class="start"
->
+
+<!-- =====================================================
+     BOTONES
+===================================================== -->
+
+<button id="start" class="primary">
     🎙 Activar micrófono
 </button>
 
-<button
-    id="stop"
-    class="stop"
-    disabled
->
+<button id="stop" class="secondary" disabled>
     Detener
 </button>
 
 
-<!-- ==============================
-     MELODÍA
-============================== -->
+<!-- =====================================================
+     CALIBRACIÓN
+===================================================== -->
 
-<div class="melody">
+<div id="calibrationSection" class="section calibration hidden">
+
+    <div class="calibration-title">
+        🎸 Conozcamos tu instrumento
+    </div>
+
+    <div class="calibration-description">
+        Antes de comenzar a componer, ProductorIA analizará
+        el comportamiento sonoro de tu instrumento.
+        Esto permite aprender su perfil de armónicos y reducir
+        falsos reconocimientos.
+    </div>
+
+    <div id="calibrationStep" class="calibration-step">
+        Preparado
+    </div>
+
+    <div id="calibrationProgress" class="calibration-progress">
+        Paso 0 de 4
+    </div>
+
+    <button id="captureCalibration" class="primary">
+        🎙 Capturar muestra
+    </button>
+
+    <button id="finishCalibration" class="secondary hidden">
+        ✓ Usar este perfil
+    </button>
+
+    <div id="calibrationResult" class="calibration-result">
+        Todavía no hay un perfil creado.
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     PERFIL
+===================================================== -->
+
+<div id="profileSection" class="section hidden">
+
+    <div class="melody-title">
+        Perfil del instrumento
+    </div>
+
+    <div id="profileStatus" class="profile-ok">
+        ✓ Instrumento calibrado
+    </div>
+
+    <div id="profileData" class="profile-data">
+        Perfil sonoro activo.
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     MELODÍA
+===================================================== -->
+
+<div class="section">
 
     <div class="melody-title">
         Melodía detectada
     </div>
 
-    <div
-        id="melodyNotes"
-        class="melody-notes"
-    >
+    <div id="melodyNotes" class="melody-notes">
         —
     </div>
 
 </div>
 
 
-<!-- ==============================
+<!-- =====================================================
      NOTAS SIMULTÁNEAS
-============================== -->
+===================================================== -->
 
-<div class="melody">
+<div class="section">
 
     <div class="melody-title">
         Notas simultáneas
     </div>
 
-    <div
-        id="chordNotes"
-        class="melody-notes"
-    >
+    <div id="chordNotes" class="melody-notes">
         —
     </div>
 
 </div>
 
 
-<!-- ==============================
+<!-- =====================================================
      ACORDE
-============================== -->
+===================================================== -->
 
-<div class="chord-box">
+<div class="section">
 
     <div class="melody-title">
         Acorde detectado
     </div>
 
-    <div
-        id="chordName"
-        class="chord-name"
-    >
+    <div id="chordName" class="chord-name">
         —
     </div>
 
 </div>
 
+
+<!-- =====================================================
+     INFORMACIÓN
+===================================================== -->
 
 <div class="info">
 
@@ -342,27 +369,21 @@ canvas {
 
 <br><br>
 
-El sistema analiza el sonido del instrumento
-para detectar notas individuales y varias
-frecuencias fundamentales simultáneas.
+El sistema analiza el sonido capturado por el micrófono
+para detectar notas individuales, notas simultáneas
+y estructuras de acordes.
 
 <br><br>
 
-La detección polifónica utiliza análisis
-armónico para distinguir las fundamentales
-de los armónicos naturales del instrumento.
+La calibración crea un perfil sonoro del instrumento
+durante esta sesión. El objetivo es distinguir mejor
+las frecuencias fundamentales de sus armónicos.
 
 <br><br>
 
-Primera etapa:
-
-<strong>Mayores, menores y estructuras básicas.</strong>
-
-<br><br>
-
-Posteriormente podremos ampliar el sistema
-a séptimas, sus4, disminuidos, aumentados,
-tensiones, inversiones y otras estructuras.
+<strong>Importante:</strong> esta etapa utiliza procesamiento
+digital de señal y análisis musical. La inteligencia artificial
+compositiva se incorporará sobre esta base posteriormente.
 
 </div>
 
@@ -374,188 +395,80 @@ tensiones, inversiones y otras estructuras.
 <script>
 
 /* =========================================================
-   PRODUCTOR IA
-   DETECTOR MONOFÓNICO + POLIFÓNICO
-========================================================= */
-
-
-/* =========================================================
    AUDIO
 ========================================================= */
 
 let audioContext = null;
-
 let analyser = null;
-
 let microphone = null;
-
 let stream = null;
-
 let animation = null;
 
 
 /* =========================================================
-   CONFIGURACIÓN GENERAL
+   CONFIGURACIÓN
 ========================================================= */
 
-/*
- * Umbral mínimo de señal.
- *
- * Evita que el ruido del micrófono en silencio
- * sea interpretado como música.
- */
-
-const RMS_THRESHOLD = 0.012;
-
-
-/*
- * Cantidad de cuadros consecutivos necesarios
- * para aceptar una nueva nota.
- */
+const RMS_THRESHOLD = 0.010;
 
 const STABILITY_REQUIRED = 4;
 
-
-/*
- * Cambio mínimo de afinación para considerar
- * que realmente apareció otra nota.
- */
-
-const MIN_NOTE_CHANGE_CENTS = 55;
-
-
-/*
- * Tiempo mínimo de estabilidad.
- */
-
-const NEW_NOTE_TIME = 90;
-
-
-/*
- * Tiempo para considerar que una nota terminó.
- */
+const NEW_NOTE_TIME = 110;
 
 const RELEASE_TIME = 180;
 
-
-/*
- * Ventana de memoria de la melodía.
- */
+const MIN_NOTE_CHANGE_CENTS = 55;
 
 const MELODY_WINDOW = 5000;
 
 
-/* =========================================================
-   RANGO MONOFÓNICO
-========================================================= */
+/*
+ * Rango musical aproximado para instrumentos
+ * como guitarra, bajo, teclado, etc.
+ */
 
-const MIN_NOTE_FREQUENCY = 65;
+const MIN_FREQUENCY = 55;
 
-const MAX_NOTE_FREQUENCY = 420;
+const MAX_FREQUENCY = 1000;
 
-
-/* =========================================================
-   RANGO POLIFÓNICO
-========================================================= */
 
 /*
- * Guitarra:
- *
- * E2 = 82.41 Hz
- *
- * Una guitarra estándar llega aproximadamente
- * desde 82 Hz.
- *
- * Dejamos margen para instrumentos similares.
+ * Rango utilizado para detectar fundamentales
+ * de acordes.
  */
 
 const CHORD_MIN_FREQ = 65;
 
-const CHORD_MAX_FREQ = 420;
+const CHORD_MAX_FREQ = 500;
 
 
 /*
- * FFT.
- *
- * 8192 ofrece una resolución razonable.
+ * Umbral relativo inicial.
  */
 
-const FFT_SIZE = 8192;
+const CHORD_PEAK_RATIO = 0.34;
 
 
 /*
- * Número máximo de notas simultáneas
- * que mostraremos.
+ * Máximo de notas simultáneas.
  */
 
 const MAX_CHORD_NOTES = 6;
 
 
 /*
- * Número mínimo de notas para intentar
- * reconocer un acorde.
+ * Número de armónicos utilizados
+ * para evaluar una fundamental.
  */
 
-const MIN_CHORD_NOTES = 3;
+const MAX_HARMONICS = 6;
 
 
 /*
- * Número de armónicos usados para evaluar
- * una posible nota fundamental.
+ * Duración de cada muestra de calibración.
  */
 
-const HARMONIC_COUNT = 5;
-
-
-/*
- * Pesos de los armónicos.
- *
- * La fundamental tiene más importancia.
- */
-
-const HARMONIC_WEIGHTS = [
-    1.00,
-    0.65,
-    0.42,
-    0.30,
-    0.22
-];
-
-
-/*
- * Tolerancia de búsqueda alrededor
- * de la frecuencia esperada.
- *
- * En Hz.
- */
-
-const FREQUENCY_SEARCH_CENTS = 45;
-
-
-/*
- * Relación mínima entre una nota
- * y la nota fundamental más fuerte.
- */
-
-const CHORD_NOTE_RATIO = 0.38;
-
-
-/*
- * Diferencia mínima entre candidatos.
- *
- * Sirve para no seleccionar dos veces
- * la misma nota en diferentes octavas.
- */
-
-const MIN_ROOT_SEPARATION_CENTS = 70;
-
-
-/*
- * Confianza mínima para considerar
- * que realmente existe polifonía.
- */
-
-const POLYPHONIC_CONFIDENCE = 0.42;
+const CALIBRATION_DURATION = 1500;
 
 
 /* =========================================================
@@ -586,6 +499,30 @@ const canvas =
 const canvasContext =
     canvas.getContext("2d");
 
+const calibrationSection =
+    document.getElementById("calibrationSection");
+
+const calibrationStepElement =
+    document.getElementById("calibrationStep");
+
+const calibrationProgressElement =
+    document.getElementById("calibrationProgress");
+
+const calibrationResultElement =
+    document.getElementById("calibrationResult");
+
+const captureCalibrationButton =
+    document.getElementById("captureCalibration");
+
+const finishCalibrationButton =
+    document.getElementById("finishCalibration");
+
+const profileSection =
+    document.getElementById("profileSection");
+
+const profileDataElement =
+    document.getElementById("profileData");
+
 
 /* =========================================================
    ESTADO MONOFÓNICO
@@ -605,11 +542,6 @@ let candidateStarted = null;
 
 let silenceStarted = null;
 
-
-/* =========================================================
-   ESTADO DE MELODÍA
-========================================================= */
-
 let detectedNotes = [];
 
 let lastRecordedTime = 0;
@@ -628,12 +560,49 @@ let candidateChordCount = 0;
 let candidateChordStarted = null;
 
 
-/*
- * Indica si el análisis actual
- * considera que existe polifonía real.
- */
+/* =========================================================
+   CALIBRACIÓN
+========================================================= */
 
-let polyphonicDetected = false;
+const calibrationSteps = [
+
+    {
+        title:
+            "Paso 1 — toca una nota grave",
+        description:
+            "Toca una nota clara y mantenla durante toda la captura."
+    },
+
+    {
+        title:
+            "Paso 2 — toca una nota media",
+        description:
+            "Toca una nota del registro medio de tu instrumento."
+    },
+
+    {
+        title:
+            "Paso 3 — toca una nota aguda",
+        description:
+            "Toca una nota aguda y mantenla durante la captura."
+    },
+
+    {
+        title:
+            "Paso 4 — toca un acorde",
+        description:
+            "Toca un acorde claro y mantenlo durante la captura."
+    }
+
+];
+
+let calibrationIndex = 0;
+
+let calibrationSamples = [];
+
+let calibrationRunning = false;
+
+let instrumentProfile = null;
 
 
 /* =========================================================
@@ -641,7 +610,6 @@ let polyphonicDetected = false;
 ========================================================= */
 
 const noteNames = [
-
     "C",
     "C#",
     "D",
@@ -654,19 +622,11 @@ const noteNames = [
     "A",
     "A#",
     "B"
-
 ];
 
 
 /* =========================================================
-   FRECUENCIAS DE REFERENCIA
-========================================================= */
-
-const A4_FREQUENCY = 440;
-
-
-/* =========================================================
-   CONVERTIR FRECUENCIA A MIDI
+   UTILIDADES
 ========================================================= */
 
 function frequencyToMidi(frequency) {
@@ -675,7 +635,6 @@ function frequencyToMidi(frequency) {
         !frequency ||
         frequency <= 0
     ) {
-
         return null;
     }
 
@@ -683,21 +642,16 @@ function frequencyToMidi(frequency) {
         69 +
         12 *
         Math.log2(
-            frequency /
-            A4_FREQUENCY
+            frequency / 440
         )
     );
 }
 
 
-/* =========================================================
-   MIDI A FRECUENCIA
-========================================================= */
-
 function midiToFrequency(midi) {
 
     return (
-        A4_FREQUENCY *
+        440 *
         Math.pow(
             2,
             (midi - 69) / 12
@@ -706,10 +660,6 @@ function midiToFrequency(midi) {
 }
 
 
-/* =========================================================
-   FRECUENCIA A NOTA
-========================================================= */
-
 function frequencyToNote(frequency) {
 
     const midi =
@@ -717,17 +667,12 @@ function frequencyToNote(frequency) {
             frequency
         );
 
-    if (
-        midi === null
-    ) {
-
+    if (midi === null) {
         return null;
     }
 
     const roundedMidi =
-        Math.round(
-            midi
-        );
+        Math.round(midi);
 
     return noteNames[
         (
@@ -738,19 +683,11 @@ function frequencyToNote(frequency) {
 }
 
 
-/* =========================================================
-   NOTA A PITCH CLASS
-========================================================= */
-
 function noteToPitchClass(note) {
 
     return noteNames.indexOf(note);
 }
 
-
-/* =========================================================
-   DIFERENCIA EN CENTS
-========================================================= */
 
 function centsDifference(
     frequency1,
@@ -761,7 +698,6 @@ function centsDifference(
         !frequency1 ||
         !frequency2
     ) {
-
         return Infinity;
     }
 
@@ -772,6 +708,37 @@ function centsDifference(
             frequency2
         )
     );
+}
+
+
+function median(values) {
+
+    if (!values.length) {
+        return null;
+    }
+
+    const sorted =
+        [...values].sort(
+            (a, b) => a - b
+        );
+
+    const middle =
+        Math.floor(
+            sorted.length / 2
+        );
+
+    if (
+        sorted.length % 2 === 0
+    ) {
+
+        return (
+            sorted[middle - 1] +
+            sorted[middle]
+        ) / 2;
+
+    }
+
+    return sorted[middle];
 }
 
 
@@ -802,7 +769,7 @@ function calculateRMS(buffer) {
 
 
 /* =========================================================
-   DETECTOR MONOFÓNICO
+   DETECTOR DE PITCH
 ========================================================= */
 
 function detectPitch(
@@ -816,10 +783,6 @@ function detectPitch(
         );
 
 
-    /*
-     * Silencio.
-     */
-
     if (
         rms <
         RMS_THRESHOLD
@@ -832,18 +795,18 @@ function detectPitch(
     const minLag =
         Math.floor(
             sampleRate /
-            MAX_NOTE_FREQUENCY
+            MAX_FREQUENCY
         );
 
 
     const maxLag =
         Math.floor(
             sampleRate /
-            MIN_NOTE_FREQUENCY
+            MIN_FREQUENCY
         );
 
 
-    const correlations = [];
+    const candidates = [];
 
 
     /*
@@ -858,9 +821,9 @@ function detectPitch(
 
         let sum = 0;
 
-        let energy1 = 0;
+        let energyA = 0;
 
-        let energy2 = 0;
+        let energyB = 0;
 
 
         for (
@@ -879,17 +842,17 @@ function detectPitch(
             sum +=
                 a * b;
 
-            energy1 +=
+            energyA +=
                 a * a;
 
-            energy2 +=
+            energyB +=
                 b * b;
         }
 
 
         if (
-            energy1 <= 0 ||
-            energy2 <= 0
+            energyA <= 0 ||
+            energyB <= 0
         ) {
 
             continue;
@@ -899,33 +862,37 @@ function detectPitch(
         const score =
             sum /
             Math.sqrt(
-                energy1 *
-                energy2
+                energyA *
+                energyB
             );
 
 
-        correlations.push({
+        if (
+            score > 0.28
+        ) {
 
-            frequency:
-                sampleRate /
-                lag,
+            candidates.push({
 
-            score:
-                score
+                frequency:
+                    sampleRate /
+                    lag,
 
-        });
+                score:
+                    score
+            });
+        }
     }
 
 
     if (
-        correlations.length === 0
+        candidates.length === 0
     ) {
 
         return null;
     }
 
 
-    correlations.sort(
+    candidates.sort(
         (a, b) =>
             b.score -
             a.score
@@ -933,61 +900,39 @@ function detectPitch(
 
 
     /*
-     * Elegimos la mejor correlación.
-     */
-
-    const selected =
-        correlations[0];
-
-
-    if (
-        selected.score <
-        0.35
-    ) {
-
-        return null;
-    }
-
-
-    /*
-     * Refinamiento mediante candidatos
-     * cercanos a la frecuencia encontrada.
-     */
-
-    let refinedFrequency =
-        selected.frequency;
-
-
-    /*
-     * Evitar errores de octava.
+     * Preferimos el candidato más grave
+     * cuando su correlación es suficientemente
+     * cercana al máximo.
      *
-     * Si aparece una frecuencia que es
-     * aproximadamente el doble y tiene
-     * una correlación suficientemente fuerte,
-     * evaluamos ambas.
+     * Esto reduce errores por segundo
+     * y tercer armónico.
      */
+
+    const bestScore =
+        candidates[0].score;
+
+    let selected =
+        candidates[0];
+
 
     for (
         const candidate
-        of correlations.slice(0, 12)
+        of candidates
     ) {
 
-        const ratio =
-            candidate.frequency /
-            selected.frequency;
-
-
         if (
-            ratio > 1.95 &&
-            ratio < 2.05 &&
-            candidate.score >
-            selected.score * 0.82
+            candidate.score >=
+            bestScore * 0.94
         ) {
 
-            refinedFrequency =
-                selected.frequency;
+            if (
+                candidate.frequency <
+                selected.frequency
+            ) {
 
-            break;
+                selected =
+                    candidate;
+            }
         }
     }
 
@@ -995,17 +940,19 @@ function detectPitch(
     return {
 
         frequency:
-            refinedFrequency,
+            selected.frequency,
 
         score:
-            selected.score
+            selected.score,
 
+        rms:
+            rms
     };
 }
 
 
 /* =========================================================
-   OBTENER MAGNITUD DEL FFT
+   FFT — ENERGÍA EN UNA FRECUENCIA
 ========================================================= */
 
 function getSpectrum() {
@@ -1039,251 +986,662 @@ function getSpectrum() {
 
 
 /* =========================================================
-   FRECUENCIA A BIN
+   OBTENER MAGNITUD CERCA DE FRECUENCIA
 ========================================================= */
 
-function frequencyToBin(
+function getMagnitudeAtFrequency(
+    spectrum,
     frequency
 ) {
 
-    return Math.round(
-        frequency *
-        FFT_SIZE /
-        audioContext.sampleRate
+    const bin =
+        Math.round(
+            frequency *
+            analyser.fftSize /
+            audioContext.sampleRate
+        );
+
+
+    const radius = 2;
+
+    let maximum = -Infinity;
+
+
+    for (
+        let i =
+            Math.max(
+                0,
+                bin - radius
+            );
+
+        i <=
+            Math.min(
+                spectrum.length - 1,
+                bin + radius
+            );
+
+        i++
+    ) {
+
+        if (
+            spectrum[i] >
+            maximum
+        ) {
+
+            maximum =
+                spectrum[i];
+        }
+    }
+
+
+    /*
+     * FloatFrequencyData está expresado
+     * en dB.
+     */
+
+    if (
+        !Number.isFinite(
+            maximum
+        )
+    ) {
+
+        return 0;
+    }
+
+
+    return Math.pow(
+        10,
+        maximum / 20
     );
 }
 
 
 /* =========================================================
-   ENERGÍA ALREDEDOR DE UNA FRECUENCIA
+   PERFIL SONORO
 ========================================================= */
 
-function getFrequencyEnergy(
-    spectrum,
-    frequency
-) {
+function calculateCalibrationProfile() {
 
     if (
-        !spectrum ||
-        !audioContext
+        calibrationSamples.length === 0
     ) {
 
-        return 0;
+        return null;
     }
 
 
-    const center =
-        frequencyToBin(
-            frequency
-        );
-
-
-    /*
-     * Convertimos 45 cents
-     * aproximadamente en una pequeña
-     * zona de búsqueda.
-     */
-
-    const ratio =
-        Math.pow(
-            2,
-            FREQUENCY_SEARCH_CENTS /
-            1200
-        );
-
-
-    const lowFrequency =
-        frequency /
-        ratio;
-
-
-    const highFrequency =
-        frequency *
-        ratio;
-
-
-    const lowBin =
-        Math.max(
-            1,
-            frequencyToBin(
-                lowFrequency
+    const frequencies =
+        calibrationSamples
+            .map(
+                sample =>
+                    sample.frequency
             )
+            .filter(
+                frequency =>
+                    Number.isFinite(
+                        frequency
+                    )
+            );
+
+
+    const medianFrequency =
+        median(
+            frequencies
         );
 
 
-    const highBin =
-        Math.min(
-            spectrum.length - 1,
-            frequencyToBin(
-                highFrequency
-            )
-        );
+    const averageRms =
+        calibrationSamples.reduce(
+            (sum, sample) =>
+                sum + sample.rms,
+            0
+        ) /
+        calibrationSamples.length;
 
 
-    let energy = 0;
+    const harmonicRatios = [];
 
-    let count = 0;
+
+    calibrationSamples.forEach(
+        sample => {
+
+            if (
+                !sample.frequency ||
+                !sample.spectrum
+            ) {
+
+                return;
+            }
+
+
+            const fundamental =
+                getMagnitudeAtFrequency(
+                    sample.spectrum,
+                    sample.frequency
+                );
+
+
+            if (
+                fundamental <= 0
+            ) {
+
+                return;
+            }
+
+
+            const ratios = [];
+
+
+            for (
+                let harmonic = 2;
+                harmonic <=
+                    MAX_HARMONICS;
+                harmonic++
+            ) {
+
+                const magnitude =
+                    getMagnitudeAtFrequency(
+                        sample.spectrum,
+                        sample.frequency *
+                        harmonic
+                    );
+
+
+                ratios.push(
+                    magnitude /
+                    fundamental
+                );
+            }
+
+
+            harmonicRatios.push(
+                ratios
+            );
+        }
+    );
+
+
+    const harmonicProfile =
+        [];
 
 
     for (
-        let bin = lowBin;
-        bin <= highBin;
-        bin++
+        let h = 0;
+        h < MAX_HARMONICS - 1;
+        h++
     ) {
 
-        const db =
-            spectrum[bin];
+        const values =
+            harmonicRatios
+                .map(
+                    row =>
+                        row[h]
+                )
+                .filter(
+                    value =>
+                        Number.isFinite(
+                            value
+                        )
+                );
 
 
-        if (
-            !Number.isFinite(db)
-        ) {
-
-            continue;
-        }
-
-
-        /*
-         * Convertir aproximadamente
-         * dBFS a amplitud lineal.
-         */
-
-        const amplitude =
-            Math.pow(
-                10,
-                db / 20
-            );
-
-
-        /*
-         * Dar algo más de peso
-         * al bin central.
-         */
-
-        const distance =
-            Math.abs(
-                bin -
-                center
-            );
-
-
-        const width =
-            Math.max(
-                1,
-                highBin -
-                lowBin
-            );
-
-
-        const weight =
-            Math.max(
-                0.25,
-                1 -
-                distance /
-                width
-            );
-
-
-        energy +=
-            amplitude *
-            weight;
-
-        count++;
+        harmonicProfile.push(
+            values.length
+                ? values.reduce(
+                    (a, b) =>
+                        a + b,
+                    0
+                ) /
+                values.length
+                : 0
+        );
     }
 
 
-    if (
-        count === 0
-    ) {
+    return {
 
-        return 0;
-    }
+        createdAt:
+            Date.now(),
 
+        samples:
+            calibrationSamples.length,
 
-    return energy /
-        count;
+        medianFrequency:
+            medianFrequency,
+
+        averageRms:
+            averageRms,
+
+        harmonicProfile:
+            harmonicProfile
+    };
 }
 
 
 /* =========================================================
-   PUNTUACIÓN DE UNA FUNDAMENTAL
+   CALIBRACIÓN
+========================================================= */
+
+function updateCalibrationInterface() {
+
+    if (
+        calibrationIndex >=
+        calibrationSteps.length
+    ) {
+
+        calibrationStepElement.textContent =
+            "✓ Calibración terminada";
+
+        calibrationProgressElement.textContent =
+            "4 de 4";
+
+        captureCalibrationButton.classList.add(
+            "hidden"
+        );
+
+        finishCalibrationButton.classList.remove(
+            "hidden"
+        );
+
+        const profile =
+            calculateCalibrationProfile();
+
+
+        if (profile) {
+
+            calibrationResultElement.innerHTML =
+                "<span class='profile-ok'>✓ Perfil sonoro creado.</span><br>" +
+                "Muestras analizadas: " +
+                profile.samples +
+                "<br>" +
+                "El perfil queda listo para utilizarse " +
+                "durante la detección.";
+
+        }
+
+        return;
+    }
+
+
+    const step =
+        calibrationSteps[
+            calibrationIndex
+        ];
+
+
+    calibrationStepElement.textContent =
+        step.title;
+
+    calibrationProgressElement.textContent =
+        "Paso " +
+        (calibrationIndex + 1) +
+        " de 4";
+
+    calibrationResultElement.textContent =
+        step.description;
+}
+
+
+async function captureCalibrationSample() {
+
+    if (
+        calibrationRunning ||
+        !analyser ||
+        !audioContext
+    ) {
+
+        return;
+    }
+
+
+    calibrationRunning =
+        true;
+
+    captureCalibrationButton.disabled =
+        true;
+
+
+    calibrationResultElement.textContent =
+        "Escuchando... toca y mantén la nota o acorde.";
+
+
+    const startTime =
+        performance.now();
+
+
+    const samples = [];
+
+
+    while (
+        performance.now() -
+        startTime <
+        CALIBRATION_DURATION
+    ) {
+
+        const buffer =
+            new Float32Array(
+                analyser.fftSize
+            );
+
+
+        analyser.getFloatTimeDomainData(
+            buffer
+        );
+
+
+        const pitch =
+            detectPitch(
+                buffer,
+                audioContext.sampleRate
+            );
+
+
+        if (pitch) {
+
+            const spectrum =
+                getSpectrum();
+
+
+            samples.push({
+
+                frequency:
+                    pitch.frequency,
+
+                rms:
+                    pitch.rms,
+
+                spectrum:
+                    spectrum
+                        ? Array.from(
+                            spectrum
+                        )
+                        : null
+            });
+        }
+
+
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    45
+                )
+        );
+    }
+
+
+    if (
+        samples.length === 0
+    ) {
+
+        calibrationResultElement.textContent =
+            "No se detectó una señal suficientemente clara. " +
+            "Acerca el instrumento al micrófono y repite.";
+
+        calibrationRunning =
+            false;
+
+        captureCalibrationButton.disabled =
+            false;
+
+        return;
+    }
+
+
+    /*
+     * Guardamos una muestra representativa
+     * para el perfil.
+     */
+
+    const frequencies =
+        samples.map(
+            sample =>
+                sample.frequency
+        );
+
+
+    const representativeFrequency =
+        median(
+            frequencies
+        );
+
+
+    const closestSample =
+        samples.reduce(
+            (best, sample) => {
+
+                if (!best) {
+                    return sample;
+                }
+
+                return (
+                    Math.abs(
+                        sample.frequency -
+                        representativeFrequency
+                    ) <
+                    Math.abs(
+                        best.frequency -
+                        representativeFrequency
+                    )
+                )
+                    ? sample
+                    : best;
+            },
+            null
+        );
+
+
+    calibrationSamples.push({
+
+        frequency:
+            representativeFrequency,
+
+        rms:
+            samples.reduce(
+                (sum, sample) =>
+                    sum + sample.rms,
+                0
+            ) /
+            samples.length,
+
+        spectrum:
+            closestSample
+                ? closestSample.spectrum
+                : null
+    });
+
+
+    calibrationIndex++;
+
+
+    calibrationRunning =
+        false;
+
+    captureCalibrationButton.disabled =
+        false;
+
+
+    updateCalibrationInterface();
+}
+
+
+/* =========================================================
+   INICIAR PERFIL
+========================================================= */
+
+finishCalibrationButton
+.addEventListener(
+    "click",
+    () => {
+
+        instrumentProfile =
+            calculateCalibrationProfile();
+
+
+        if (
+            !instrumentProfile
+        ) {
+
+            return;
+        }
+
+
+        profileSection.classList.remove(
+            "hidden"
+        );
+
+
+        profileDataElement.textContent =
+            "Muestras: " +
+            instrumentProfile.samples +
+            " · Perfil armónico activo";
+
+
+        calibrationSection.classList.add(
+            "hidden"
+        );
+
+
+        statusElement.textContent =
+            "🎙 Escuchando — instrumento calibrado";
+    }
+);
+
+
+/* =========================================================
+   BOTÓN CALIBRACIÓN
+========================================================= */
+
+captureCalibrationButton
+.addEventListener(
+    "click",
+    captureCalibrationSample
+);
+
+
+/* =========================================================
+   DETECTOR POLIFÓNICO
 ========================================================= */
 
 function scoreFundamental(
     spectrum,
-    fundamental
+    frequency
 ) {
 
     let score = 0;
 
-    let totalWeight = 0;
+
+    /*
+     * Fundamental recibe mayor peso.
+     */
+
+    const fundamental =
+        getMagnitudeAtFrequency(
+            spectrum,
+            frequency
+        );
+
+
+    score +=
+        fundamental * 1.6;
 
 
     /*
-     * Analizar fundamental + armónicos.
+     * Buscar armónicos.
      */
 
     for (
-        let h = 1;
-        h <= HARMONIC_COUNT;
-        h++
+        let harmonic = 2;
+        harmonic <=
+            MAX_HARMONICS;
+        harmonic++
     ) {
 
-        const frequency =
-            fundamental *
-            h;
+        const harmonicFrequency =
+            frequency *
+            harmonic;
 
-
-        /*
-         * No analizar armónicos fuera
-         * del rango útil del FFT.
-         */
 
         if (
-            frequency >
-            audioContext.sampleRate / 2
+            harmonicFrequency >
+            CHORD_MAX_FREQ *
+            2
         ) {
 
             break;
         }
 
 
-        const weight =
-            HARMONIC_WEIGHTS[h - 1];
-
-
-        const energy =
-            getFrequencyEnergy(
+        const magnitude =
+            getMagnitudeAtFrequency(
                 spectrum,
-                frequency
+                harmonicFrequency
             );
 
 
+        let harmonicWeight =
+            1 /
+            harmonic;
+
+
+        /*
+         * Si existe perfil del instrumento,
+         * utilizamos su estructura armónica.
+         */
+
+        if (
+            instrumentProfile &&
+            instrumentProfile
+                .harmonicProfile
+        ) {
+
+            const profileIndex =
+                harmonic - 2;
+
+
+            const expected =
+                instrumentProfile
+                    .harmonicProfile[
+                        profileIndex
+                    ] || 0;
+
+
+            const actualRatio =
+                fundamental > 0
+                    ? magnitude /
+                      fundamental
+                    : 0;
+
+
+            const similarity =
+                1 /
+                (
+                    1 +
+                    Math.abs(
+                        actualRatio -
+                        expected
+                    )
+                );
+
+
+            harmonicWeight *=
+                0.7 +
+                similarity;
+        }
+
+
         score +=
-            energy *
-            weight;
-
-
-        totalWeight +=
-            weight;
+            magnitude *
+            harmonicWeight;
     }
 
 
-    if (
-        totalWeight === 0
-    ) {
-
-        return 0;
-    }
-
-
-    return score /
-        totalWeight;
+    return score;
 }
 
 
 /* =========================================================
-   DETECTAR FUNDAMENTALES POLIFÓNICAS
+   DETECTAR NOTAS SIMULTÁNEAS
 ========================================================= */
 
 function detectChordNotes() {
@@ -1293,13 +1651,7 @@ function detectChordNotes() {
         !audioContext
     ) {
 
-        return {
-
-            notes: [],
-
-            confidence: 0
-
-        };
+        return [];
     }
 
 
@@ -1307,93 +1659,67 @@ function detectChordNotes() {
         getSpectrum();
 
 
-    if (
-        !spectrum
-    ) {
-
-        return {
-
-            notes: [],
-
-            confidence: 0
-
-        };
+    if (!spectrum) {
+        return [];
     }
 
 
     /*
-     * Primero obtenemos el RMS.
+     * Determinar si realmente existe señal.
      */
 
-    const timeBuffer =
+    const buffer =
         new Float32Array(
             analyser.fftSize
         );
 
 
     analyser.getFloatTimeDomainData(
-        timeBuffer
+        buffer
     );
 
 
     const rms =
         calculateRMS(
-            timeBuffer
+            buffer
         );
 
-
-    /*
-     * Silencio.
-     */
 
     if (
         rms <
         RMS_THRESHOLD
     ) {
 
-        return {
-
-            notes: [],
-
-            confidence: 0
-
-        };
+        return [];
     }
 
 
     /*
-     * Crear candidatos de frecuencia.
-     *
-     * Usamos semitonos cromáticos
-     * a través de varias octavas.
+     * Evaluamos cada semitono.
      */
 
     const candidates = [];
 
 
     const minMidi =
-        frequencyToMidi(
-            CHORD_MIN_FREQ
+        Math.ceil(
+            frequencyToMidi(
+                CHORD_MIN_FREQ
+            )
         );
 
 
     const maxMidi =
-        frequencyToMidi(
-            CHORD_MAX_FREQ
+        Math.floor(
+            frequencyToMidi(
+                CHORD_MAX_FREQ
+            )
         );
 
 
     for (
-        let midi =
-            Math.floor(
-                minMidi
-            );
-
-        midi <=
-            Math.ceil(
-                maxMidi
-            );
-
+        let midi = minMidi;
+        midi <= maxMidi;
         midi++
     ) {
 
@@ -1403,17 +1729,6 @@ function detectChordNotes() {
             );
 
 
-        if (
-            frequency <
-            CHORD_MIN_FREQ ||
-            frequency >
-            CHORD_MAX_FREQ
-        ) {
-
-            continue;
-        }
-
-
         const score =
             scoreFundamental(
                 spectrum,
@@ -1421,26 +1736,28 @@ function detectChordNotes() {
             );
 
 
-        candidates.push({
+        if (
+            score > 0
+        ) {
 
-            frequency:
-                frequency,
+            candidates.push({
 
-            midi:
-                midi,
+                midi:
+                    midi,
 
-            note:
-                noteNames[
+                frequency:
+                    frequency,
+
+                pitchClass:
                     (
                         midi % 12 +
                         12
-                    ) % 12
-                ],
+                    ) % 12,
 
-            score:
-                score
-
-        });
+                score:
+                    score
+            });
+        }
     }
 
 
@@ -1448,45 +1765,12 @@ function detectChordNotes() {
         candidates.length === 0
     ) {
 
-        return {
-
-            notes: [],
-
-            confidence: 0
-
-        };
+        return [];
     }
 
 
     /*
-     * Encontrar máximo.
-     */
-
-    const maxScore =
-        Math.max(
-            ...candidates.map(
-                item =>
-                    item.score
-            )
-        );
-
-
-    if (
-        maxScore <= 0
-    ) {
-
-        return {
-
-            notes: [],
-
-            confidence: 0
-
-        };
-    }
-
-
-    /*
-     * Ordenar.
+     * Ordenar por puntuación.
      */
 
     candidates.sort(
@@ -1496,226 +1780,97 @@ function detectChordNotes() {
     );
 
 
+    const strongestScore =
+        candidates[0].score;
+
+
     /*
-     * Seleccionar fundamentales fuertes.
+     * Consolidar candidatos de la misma
+     * clase de nota.
      */
 
-    const selected =
-        [];
+    const pitchClassScores =
+        new Array(12).fill(0);
 
 
-    for (
-        const candidate
-        of candidates
-    ) {
-
-        /*
-         * Normalización.
-         */
-
-        const relative =
-            candidate.score /
-            maxScore;
-
-
-        /*
-         * Umbral relativo.
-         */
-
-        if (
-            relative <
-            CHORD_NOTE_RATIO
-        ) {
-
-            continue;
-        }
-
-
-        /*
-         * Evitar seleccionar
-         * dos octavas de la misma nota.
-         */
-
-        let tooClose =
-            false;
-
-
-        for (
-            const existing
-            of selected
-        ) {
-
-            const cents =
-                Math.abs(
-                    1200 *
-                    Math.log2(
-                        candidate.frequency /
-                        existing.frequency
-                    )
-                );
-
+    candidates.forEach(
+        candidate => {
 
             /*
-             * Si son la misma pitch class
-             * en otra octava, quedarse con
-             * la más fuerte.
+             * Evitar que armónicos de una nota
+             * dominen completamente.
              */
 
-            if (
-                candidate.note ===
-                existing.note
-            ) {
+            const normalized =
+                candidate.score /
+                strongestScore;
 
-                tooClose =
-                    true;
-
-                break;
-            }
-
-
-            /*
-             * Evitar duplicados extremadamente
-             * cercanos.
-             */
 
             if (
-                cents <
-                MIN_ROOT_SEPARATION_CENTS
+                normalized >=
+                0.08
             ) {
 
-                tooClose =
-                    true;
-
-                break;
+                pitchClassScores[
+                    candidate.pitchClass
+                ] =
+                    Math.max(
+                        pitchClassScores[
+                            candidate.pitchClass
+                        ],
+                        normalized
+                    );
             }
         }
-
-
-        if (
-            tooClose
-        ) {
-
-            continue;
-        }
-
-
-        selected.push(
-            candidate
-        );
-
-
-        if (
-            selected.length >=
-            MAX_CHORD_NOTES
-        ) {
-
-            break;
-        }
-    }
-
-
-    /*
-     * Si no hay suficientes candidatos,
-     * devolver lo encontrado.
-     */
-
-    if (
-        selected.length === 0
-    ) {
-
-        return {
-
-            notes: [],
-
-            confidence: 0
-
-        };
-    }
-
-
-    /*
-     * Ordenar por pitch class
-     * para una presentación estable.
-     */
-
-    selected.sort(
-        (a, b) =>
-            a.midi -
-            b.midi
     );
 
 
-    /*
-     * Convertir a notas únicas.
-     */
-
-    const uniqueNotes = [];
+    const detected = [];
 
 
     for (
-        const item
-        of selected
+        let pc = 0;
+        pc < 12;
+        pc++
     ) {
 
         if (
-            !uniqueNotes.includes(
-                item.note
-            )
+            pitchClassScores[pc] >=
+            CHORD_PEAK_RATIO
         ) {
 
-            uniqueNotes.push(
-                item.note
-            );
+            detected.push({
+
+                note:
+                    noteNames[pc],
+
+                score:
+                    pitchClassScores[pc]
+            });
         }
     }
 
 
     /*
-     * Confianza basada en la fuerza
-     * de las fundamentales seleccionadas.
+     * Ordenar por fuerza.
      */
 
-    let confidence =
-        0;
+    detected.sort(
+        (a, b) =>
+            b.score -
+            a.score
+    );
 
 
-    if (
-        selected.length >= 3
-    ) {
-
-        const ratios =
-            selected.map(
-                item =>
-                    item.score /
-                    maxScore
-            );
-
-
-        confidence =
-            ratios.reduce(
-                (sum, value) =>
-                    sum + value,
-                0
-            ) /
-            ratios.length;
-
-    } else {
-
-        confidence =
-            selected[0].score /
-            maxScore;
-    }
-
-
-    return {
-
-        notes:
-            uniqueNotes,
-
-        confidence:
-            confidence
-
-    };
+    return detected
+        .slice(
+            0,
+            MAX_CHORD_NOTES
+        )
+        .map(
+            item =>
+                item.note
+        );
 }
 
 
@@ -1738,13 +1893,10 @@ function sameNoteSet(
 
 
     const a =
-        [...notes1]
-        .sort();
-
+        [...notes1].sort();
 
     const b =
-        [...notes2]
-        .sort();
+        [...notes2].sort();
 
 
     for (
@@ -1754,8 +1906,7 @@ function sameNoteSet(
     ) {
 
         if (
-            a[i] !==
-            b[i]
+            a[i] !== b[i]
         ) {
 
             return false;
@@ -1768,44 +1919,54 @@ function sameNoteSet(
 
 
 /* =========================================================
-   TABLA DE ACORDES
+   TIPOS DE ACORDE
 ========================================================= */
 
 const chordTypes = [
 
     {
-        suffix: "",
+        name: "",
         intervals: [0, 4, 7]
     },
 
     {
-        suffix: "m",
+        name: "m",
         intervals: [0, 3, 7]
     },
 
     {
-        suffix: "sus2",
+        name: "sus2",
         intervals: [0, 2, 7]
     },
 
     {
-        suffix: "sus4",
+        name: "sus4",
         intervals: [0, 5, 7]
     },
 
     {
-        suffix: "7",
+        name: "7",
         intervals: [0, 4, 7, 10]
     },
 
     {
-        suffix: "maj7",
+        name: "maj7",
         intervals: [0, 4, 7, 11]
     },
 
     {
-        suffix: "m7",
+        name: "m7",
         intervals: [0, 3, 7, 10]
+    },
+
+    {
+        name: "dim",
+        intervals: [0, 3, 6]
+    },
+
+    {
+        name: "aug",
+        intervals: [0, 4, 8]
     }
 
 ];
@@ -1818,8 +1979,7 @@ const chordTypes = [
 function identifyChord(notes) {
 
     if (
-        notes.length <
-        MIN_CHORD_NOTES
+        notes.length < 3
     ) {
 
         return null;
@@ -1839,21 +1999,8 @@ function identifyChord(notes) {
         ];
 
 
-    if (
-        pitchClasses.length <
-        MIN_CHORD_NOTES
-    ) {
-
-        return null;
-    }
-
-
     let bestMatch = null;
 
-
-    /*
-     * Probar cada nota como fundamental.
-     */
 
     for (
         const root
@@ -1875,79 +2022,69 @@ function identifyChord(notes) {
                 );
 
 
-            const detectedSet =
-                new Set(
-                    pitchClasses
-                );
-
-
             let matches = 0;
-
-
-            for (
-                const pitch
-                of expected
-            ) {
-
-                if (
-                    detectedSet.has(
-                        pitch
-                    )
-                ) {
-
-                    matches++;
-                }
-            }
-
 
             let extras = 0;
 
 
-            for (
-                const pitch
-                of detectedSet
-            ) {
+            pitchClasses.forEach(
+                pitch => {
 
-                if (
-                    !expected.includes(
-                        pitch
-                    )
-                ) {
+                    if (
+                        expected.includes(
+                            pitch
+                        )
+                    ) {
 
-                    extras++;
+                        matches++;
+
+                    } else {
+
+                        extras++;
+                    }
                 }
-            }
+            );
 
 
             /*
-             * Penalización fuerte por
-             * notas ajenas.
+             * También exigimos que todos
+             * los intervalos principales estén
+             * presentes cuando el acorde tiene
+             * tres o cuatro notas.
              */
 
-            const score =
-                matches -
-                extras * 1.25;
+            const missing =
+                expected.filter(
+                    pitch =>
+                        !pitchClasses.includes(
+                            pitch
+                        )
+                ).length;
+
+
+            let score =
+                matches * 2 -
+                extras * 1.25 -
+                missing * 0.65;
 
 
             /*
-             * Preferimos coincidencias
+             * Preferencia para coincidencias
              * completas.
              */
 
-            const completeness =
-                matches /
-                expected.length;
+            if (
+                missing === 0
+            ) {
 
-
-            const weightedScore =
-                score +
-                completeness;
+                score += 2;
+            }
 
 
             if (
                 !bestMatch ||
-                weightedScore >
-                    bestMatch.weightedScore
+                score >
+                bestMatch.score
             ) {
 
                 bestMatch = {
@@ -1956,13 +2093,10 @@ function identifyChord(notes) {
                         noteNames[root],
 
                     suffix:
-                        type.suffix,
+                        type.name,
 
                     score:
                         score,
-
-                    weightedScore:
-                        weightedScore,
 
                     matches:
                         matches,
@@ -1970,9 +2104,8 @@ function identifyChord(notes) {
                     extras:
                         extras,
 
-                    expected:
-                        expected
-
+                    missing:
+                        missing
                 };
             }
         }
@@ -1988,14 +2121,13 @@ function identifyChord(notes) {
 
 
     /*
-     * Exigimos que todas las notas
-     * fundamentales del acorde estén
-     * presentes.
+     * Para tres notas, exigimos
+     * una coincidencia completa.
      */
 
     if (
-        bestMatch.matches <
-        MIN_CHORD_NOTES
+        pitchClasses.length === 3 &&
+        bestMatch.matches !== 3
     ) {
 
         return null;
@@ -2003,13 +2135,24 @@ function identifyChord(notes) {
 
 
     /*
-     * Si aparecen demasiadas notas
-     * ajenas, rechazamos.
+     * No aceptar demasiadas notas extrañas.
      */
 
     if (
-        bestMatch.extras >
-        1
+        bestMatch.extras >= 2
+    ) {
+
+        return null;
+    }
+
+
+    /*
+     * Si faltan dos notas de un acorde
+     * de cuatro, tampoco confiar.
+     */
+
+    if (
+        bestMatch.missing >= 2
     ) {
 
         return null;
@@ -2024,34 +2167,27 @@ function identifyChord(notes) {
 
 
 /* =========================================================
-   PROCESAR DETECCIÓN POLIFÓNICA
+   PROCESAR ACORDE
 ========================================================= */
 
 function processChordDetection() {
 
-    const result =
+    const notes =
         detectChordNotes();
 
 
-    const notes =
-        result.notes;
-
-
-    const confidence =
-        result.confidence;
-
-
     /*
-     * Sin señal suficiente.
+     * SILENCIO:
+     * limpiar inmediatamente para evitar
+     * notas congeladas durante el silencio.
      */
 
     if (
         notes.length === 0
     ) {
 
-        polyphonicDetected =
-            false;
-
+        chordNotesElement.textContent =
+            "—";
 
         candidateChord =
             [];
@@ -2062,76 +2198,26 @@ function processChordDetection() {
         candidateChordStarted =
             null;
 
-
-        chordNotesElement.textContent =
-            "—";
-
-
-        return;
-    }
-
-
-    /*
-     * Determinar si realmente hay
-     * suficiente evidencia de polifonía.
-     *
-     * Una sola nota no debe considerarse
-     * un acorde.
-     */
-
-    polyphonicDetected =
-        notes.length >= 3 &&
-        confidence >=
-        POLYPHONIC_CONFIDENCE;
-
-
-    /*
-     * Mostrar candidatos solamente
-     * cuando existe evidencia suficiente.
-     */
-
-    if (
-        polyphonicDetected
-    ) {
-
-        chordNotesElement.textContent =
-            notes.join(
-                " · "
-            );
-
-    } else {
-
-        chordNotesElement.textContent =
-            "—";
-    }
-
-
-    /*
-     * Si no hay polifonía clara,
-     * no modificar el acorde activo.
-     */
-
-    if (
-        !polyphonicDetected
-    ) {
-
-        candidateChord =
+        activeChord =
             [];
 
-        candidateChordCount =
-            0;
-
-        candidateChordStarted =
-            null;
-
+        chordNameElement.textContent =
+            "—";
 
         return;
     }
 
 
     /*
-     * Verificar estabilidad.
+     * Mostrar solamente cuando hay
+     * una señal suficientemente estable.
      */
+
+    chordNotesElement.textContent =
+        notes.join(
+            " · "
+        );
+
 
     if (
         sameNoteSet(
@@ -2155,19 +2241,13 @@ function processChordDetection() {
     }
 
 
-    /*
-     * Aceptar solamente después
-     * de suficiente estabilidad.
-     */
-
     if (
         candidateChordCount >=
-            STABILITY_REQUIRED &&
-        candidateChordStarted !==
-            null &&
+        STABILITY_REQUIRED &&
+        candidateChordStarted !== null &&
         Date.now() -
-            candidateChordStarted >=
-            NEW_NOTE_TIME
+        candidateChordStarted >=
+        NEW_NOTE_TIME
     ) {
 
         if (
@@ -2199,9 +2279,7 @@ function processChordDetection() {
    ONDA
 ========================================================= */
 
-function drawWaveform(
-    buffer
-) {
+function drawWaveform(buffer) {
 
     canvasContext.clearRect(
         0,
@@ -2259,7 +2337,7 @@ function drawWaveform(
 
 
 /* =========================================================
-   REGISTRAR MELODÍA
+   MELODÍA
 ========================================================= */
 
 function recordNote(
@@ -2269,9 +2347,41 @@ function recordNote(
 ) {
 
     if (
+        !note ||
+        !frequency
+    ) {
+
+        return;
+    }
+
+
+    if (
         now -
         lastRecordedTime <
-        120
+        140
+    ) {
+
+        return;
+    }
+
+
+    /*
+     * Evitar repetir continuamente
+     * la misma nota.
+     */
+
+    const previous =
+        detectedNotes[
+            detectedNotes.length - 1
+        ];
+
+
+    if (
+        previous &&
+        previous.note === note &&
+        now -
+        previous.time <
+        450
     ) {
 
         return;
@@ -2288,7 +2398,6 @@ function recordNote(
 
         time:
             now
-
     });
 
 
@@ -2308,10 +2417,6 @@ function recordNote(
     updateMelody();
 }
 
-
-/* =========================================================
-   ACTUALIZAR MELODÍA
-========================================================= */
 
 function updateMelody() {
 
@@ -2348,6 +2453,15 @@ function acceptNewNote(
     now
 ) {
 
+    if (
+        !note ||
+        !frequency
+    ) {
+
+        return;
+    }
+
+
     activeNote =
         note;
 
@@ -2366,14 +2480,8 @@ function acceptNewNote(
 
     /*
      * CORRECCIÓN IMPORTANTE:
-     *
-     * Antes se enviaba:
-     *
-     * acceptNewNote(note, note, now)
-     *
-     * Ahora enviamos correctamente:
-     *
-     * acceptNewNote(note, frequency, now)
+     * aquí se pasa frequency,
+     * no note.
      */
 
     recordNote(
@@ -2412,10 +2520,6 @@ function processAudio() {
     }
 
 
-    /*
-     * Buffer temporal.
-     */
-
     const buffer =
         new Float32Array(
             analyser.fftSize
@@ -2427,32 +2531,10 @@ function processAudio() {
     );
 
 
-    /*
-     * Dibujar onda.
-     */
-
     drawWaveform(
         buffer
     );
 
-
-    /*
-     * PRIMERO:
-     *
-     * analizar polifonía.
-     *
-     * Esto nos permite saber si
-     * estamos frente a un acorde.
-     */
-
-    processChordDetection();
-
-
-    /*
-     * SEGUNDO:
-     *
-     * detector monofónico.
-     */
 
     const result =
         detectPitch(
@@ -2466,7 +2548,7 @@ function processAudio() {
 
 
     /* =====================================================
-       SILENCIO
+       SIN SEÑAL
     ===================================================== */
 
     if (
@@ -2511,266 +2593,213 @@ function processAudio() {
 
             silenceStarted =
                 null;
+
+            noteElement.textContent =
+                "—";
+
+            frequencyElement.textContent =
+                "Toca una nota";
         }
-
-
-        animation =
-            requestAnimationFrame(
-                processAudio
-            );
-
-        return;
-    }
-
-
-    silenceStarted =
-        null;
-
-
-    const frequency =
-        result.frequency;
-
-
-    const note =
-        frequencyToNote(
-            frequency
-        );
-
-
-    if (
-        !note
-    ) {
-
-        animation =
-            requestAnimationFrame(
-                processAudio
-            );
-
-        return;
-    }
-
-
-    /* =====================================================
-       POLIFONÍA DETECTADA
-    ===================================================== */
-
-    /*
-     * Si realmente estamos ante un acorde,
-     * NO dejamos que el detector monofónico
-     * contamine la melodía.
-     */
-
-    if (
-        polyphonicDetected
-    ) {
-
-        /*
-         * Limpiar candidato monofónico.
-         */
-
-        candidateNote =
-            null;
-
-        candidateFrequency =
-            null;
-
-        candidateCount =
-            0;
-
-        candidateStarted =
-            null;
-
-
-        /*
-         * No actualizar melodía.
-         */
-
-        animation =
-            requestAnimationFrame(
-                processAudio
-            );
-
-        return;
-    }
-
-
-    /* =====================================================
-       NO HAY NOTA ACTIVA
-    ===================================================== */
-
-    if (
-        activeNote === null
-    ) {
-
-        if (
-            candidateNote ===
-            note
-        ) {
-
-            candidateCount++;
-
-        } else {
-
-            candidateNote =
-                note;
-
-            candidateFrequency =
-                frequency;
-
-            candidateCount =
-                1;
-
-            candidateStarted =
-                now;
-        }
-
-
-        if (
-            candidateCount >=
-                STABILITY_REQUIRED &&
-            candidateStarted !==
-                null &&
-            now -
-                candidateStarted >=
-                NEW_NOTE_TIME
-        ) {
-
-            /*
-             * CORRECCIÓN:
-             *
-             * Antes aquí había:
-             *
-             * acceptNewNote(
-             *     note,
-             *     note,
-             *     now
-             * );
-             *
-             * Eso era incorrecto.
-             */
-
-            acceptNewNote(
-                candidateNote,
-                candidateFrequency,
-                now
-            );
-        }
-
 
     } else {
 
+        silenceStarted =
+            null;
+
+
+        const frequency =
+            result.frequency;
+
+
+        const note =
+            frequencyToNote(
+                frequency
+            );
+
+
+        if (
+            !note
+        ) {
+
+            animation =
+                requestAnimationFrame(
+                    processAudio
+                );
+
+            return;
+        }
+
 
         /* =================================================
-           MISMA NOTA
+           NO HAY NOTA ACTIVA
         ================================================= */
 
         if (
-            note ===
-            activeNote
+            activeNote === null
         ) {
 
-            activeFrequency =
-                frequency;
+            if (
+                candidateNote ===
+                note
+            ) {
+
+                candidateCount++;
 
 
-            noteElement.textContent =
-                activeNote;
+                candidateFrequency =
+                    (
+                        candidateFrequency +
+                        frequency
+                    ) / 2;
+
+            } else {
+
+                candidateNote =
+                    note;
+
+                candidateFrequency =
+                    frequency;
+
+                candidateCount =
+                    1;
+
+                candidateStarted =
+                    now;
+            }
 
 
-            frequencyElement.textContent =
-                frequency.toFixed(1) +
-                " Hz";
+            if (
+                candidateCount >=
+                STABILITY_REQUIRED &&
+                candidateStarted !== null &&
+                now -
+                candidateStarted >=
+                NEW_NOTE_TIME
+            ) {
 
-
-            candidateNote =
-                null;
-
-            candidateFrequency =
-                null;
-
-            candidateCount =
-                0;
-
-            candidateStarted =
-                null;
+                acceptNewNote(
+                    candidateNote,
+                    candidateFrequency,
+                    now
+                );
+            }
 
 
         } else {
 
 
             /* =============================================
-               CAMBIO DE NOTA
+               MISMA NOTA
             ============================================= */
 
-            const change =
-                centsDifference(
-                    frequency,
-                    activeFrequency
-                );
-
-
             if (
-                change >=
-                MIN_NOTE_CHANGE_CENTS
+                note ===
+                activeNote
             ) {
 
+                activeFrequency =
+                    (
+                        activeFrequency * 0.7
+                    ) +
+                    (
+                        frequency * 0.3
+                    );
+
+
+                noteElement.textContent =
+                    activeNote;
+
+
+                frequencyElement.textContent =
+                    activeFrequency.toFixed(1) +
+                    " Hz";
+
+
+                candidateNote =
+                    null;
+
+                candidateFrequency =
+                    null;
+
+                candidateCount =
+                    0;
+
+                candidateStarted =
+                    null;
+
+
+            } else {
+
+
+                const change =
+                    centsDifference(
+                        frequency,
+                        activeFrequency
+                    );
+
+
                 if (
-                    candidateNote ===
-                    note
+                    change >=
+                    MIN_NOTE_CHANGE_CENTS
                 ) {
 
-                    candidateCount++;
+                    if (
+                        candidateNote ===
+                        note
+                    ) {
+
+                        candidateCount++;
 
 
-                    candidateFrequency =
-                        (
-                            candidateFrequency +
-                            frequency
-                        ) / 2;
+                        candidateFrequency =
+                            (
+                                candidateFrequency +
+                                frequency
+                            ) / 2;
 
-                } else {
+                    } else {
 
-                    candidateNote =
-                        note;
+                        candidateNote =
+                            note;
 
-                    candidateFrequency =
-                        frequency;
+                        candidateFrequency =
+                            frequency;
 
-                    candidateCount =
-                        1;
+                        candidateCount =
+                            1;
 
-                    candidateStarted =
-                        now;
-                }
-
-
-                if (
-                    candidateCount >=
-                        STABILITY_REQUIRED &&
-                    candidateStarted !==
-                        null &&
-                    now -
-                        candidateStarted >=
-                        NEW_NOTE_TIME
-                ) {
-
-                    const finalDifference =
-                        centsDifference(
-                            candidateFrequency,
-                            activeFrequency
-                        );
+                        candidateStarted =
+                            now;
+                    }
 
 
                     if (
-                        finalDifference >=
-                        MIN_NOTE_CHANGE_CENTS
+                        candidateCount >=
+                        STABILITY_REQUIRED &&
+                        candidateStarted !== null &&
+                        now -
+                        candidateStarted >=
+                        NEW_NOTE_TIME
                     ) {
 
-                        acceptNewNote(
-                            candidateNote,
-                            candidateFrequency,
-                            now
-                        );
+                        const finalDifference =
+                            centsDifference(
+                                candidateFrequency,
+                                activeFrequency
+                            );
+
+
+                        if (
+                            finalDifference >=
+                            MIN_NOTE_CHANGE_CENTS
+                        ) {
+
+                            acceptNewNote(
+                                candidateNote,
+                                candidateFrequency,
+                                now
+                            );
+                        }
                     }
                 }
             }
@@ -2778,10 +2807,80 @@ function processAudio() {
     }
 
 
+    /*
+     * Detector polifónico.
+     */
+
+    processChordDetection();
+
+
     animation =
         requestAnimationFrame(
             processAudio
         );
+}
+
+
+/* =========================================================
+   REINICIAR ESTADO
+========================================================= */
+
+function resetDetectorState() {
+
+    activeNote =
+        null;
+
+    activeFrequency =
+        null;
+
+    candidateNote =
+        null;
+
+    candidateFrequency =
+        null;
+
+    candidateCount =
+        0;
+
+    candidateStarted =
+        null;
+
+    silenceStarted =
+        null;
+
+    detectedNotes =
+        [];
+
+    lastRecordedTime =
+        0;
+
+    activeChord =
+        [];
+
+    candidateChord =
+        [];
+
+    candidateChordCount =
+        0;
+
+    candidateChordStarted =
+        null;
+
+
+    noteElement.textContent =
+        "—";
+
+    frequencyElement.textContent =
+        "Toca una nota";
+
+    melodyElement.textContent =
+        "—";
+
+    chordNotesElement.textContent =
+        "—";
+
+    chordNameElement.textContent =
+        "—";
 }
 
 
@@ -2797,9 +2896,16 @@ document
 
         try {
 
-            /*
-             * Solicitar micrófono.
-             */
+            if (
+                !navigator.mediaDevices ||
+                !navigator.mediaDevices.getUserMedia
+            ) {
+
+                throw new Error(
+                    "El navegador no permite acceso al micrófono."
+                );
+            }
+
 
             stream =
                 await navigator
@@ -2815,16 +2921,14 @@ document
                             false,
 
                         autoGainControl:
-                            false
+                            false,
 
+                        channelCount:
+                            1
                     }
 
                 });
 
-
-            /*
-             * Crear AudioContext.
-             */
 
             audioContext =
                 new (
@@ -2832,11 +2936,6 @@ document
                     window.webkitAudioContext
                 )();
 
-
-            /*
-             * En algunos navegadores móviles
-             * el contexto puede quedar suspendido.
-             */
 
             if (
                 audioContext.state ===
@@ -2847,10 +2946,6 @@ document
             }
 
 
-            /*
-             * Crear fuente.
-             */
-
             microphone =
                 audioContext
                 .createMediaStreamSource(
@@ -2858,26 +2953,18 @@ document
                 );
 
 
-            /*
-             * Crear analizador.
-             */
-
             analyser =
                 audioContext
                 .createAnalyser();
 
 
-            analyser.fftSize =
-                FFT_SIZE;
-
-
             /*
-             * Poco smoothing para no
-             * arrastrar notas anteriores.
+             * FFT grande para mejorar
+             * la resolución frecuencial.
              */
 
-            analyser.smoothingTimeConstant =
-                0.08;
+            analyser.fftSize =
+                8192;
 
 
             analyser.minDecibels =
@@ -2888,83 +2975,57 @@ document
                 -10;
 
 
+            analyser.smoothingTimeConstant =
+                0.08;
+
+
             microphone.connect(
                 analyser
             );
 
 
-            /* =============================================
-               REINICIAR TODO
-            ============================================= */
+            resetDetectorState();
 
-            activeNote =
-                null;
 
-            activeFrequency =
-                null;
+            /*
+             * Reiniciar calibración.
+             */
 
-            candidateNote =
-                null;
-
-            candidateFrequency =
-                null;
-
-            candidateCount =
+            calibrationIndex =
                 0;
 
-            candidateStarted =
-                null;
-
-            silenceStarted =
-                null;
-
-
-            detectedNotes =
+            calibrationSamples =
                 [];
 
-            lastRecordedTime =
-                0;
-
-
-            activeChord =
-                [];
-
-            candidateChord =
-                [];
-
-            candidateChordCount =
-                0;
-
-            candidateChordStarted =
+            instrumentProfile =
                 null;
 
 
-            polyphonicDetected =
-                false;
+            profileSection.classList.add(
+                "hidden"
+            );
 
 
-            melodyElement.textContent =
-                "—";
+            calibrationSection.classList.remove(
+                "hidden"
+            );
 
 
-            chordNotesElement.textContent =
-                "—";
+            finishCalibrationButton.classList.add(
+                "hidden"
+            );
 
 
-            chordNameElement.textContent =
-                "—";
+            captureCalibrationButton.classList.remove(
+                "hidden"
+            );
 
 
-            noteElement.textContent =
-                "—";
-
-
-            frequencyElement.textContent =
-                "Toca una nota";
+            updateCalibrationInterface();
 
 
             statusElement.textContent =
-                "🎙 Escuchando en tiempo real";
+                "🎙 Micrófono activo — calibremos tu instrumento";
 
 
             document
@@ -2978,10 +3039,6 @@ document
             .disabled =
                 false;
 
-
-            /*
-             * Comenzar análisis.
-             */
 
             processAudio();
 
@@ -2989,7 +3046,6 @@ document
         } catch (error) {
 
             console.error(
-                "Error de micrófono:",
                 error
             );
 
@@ -2997,17 +3053,10 @@ document
             statusElement.textContent =
                 "No se pudo acceder al micrófono";
 
-
-            document
-            .getElementById("start")
-            .disabled =
-                false;
-
-
-            document
-            .getElementById("stop")
-            .disabled =
-                true;
+            alert(
+                "ProductorIA no pudo acceder al micrófono. " +
+                "Comprueba los permisos del navegador."
+            );
         }
     }
 );
@@ -3023,43 +3072,27 @@ document
     "click",
     () => {
 
-        /*
-         * Detener animación.
-         */
-
-        if (
-            animation !== null
-        ) {
-
-            cancelAnimationFrame(
-                animation
-            );
-
-            animation =
-                null;
-        }
+        cancelAnimationFrame(
+            animation
+        );
 
 
-        /*
-         * Detener micrófono.
-         */
+        animation =
+            null;
+
 
         if (
             stream
         ) {
 
             stream
-            .getTracks()
-            .forEach(
-                track =>
-                    track.stop()
-            );
+                .getTracks()
+                .forEach(
+                    track =>
+                        track.stop()
+                );
         }
 
-
-        /*
-         * Cerrar AudioContext.
-         */
 
         if (
             audioContext
@@ -3068,10 +3101,6 @@ document
             audioContext.close();
         }
 
-
-        /*
-         * Liberar referencias.
-         */
 
         stream =
             null;
@@ -3086,68 +3115,21 @@ document
             null;
 
 
-        /*
-         * Reiniciar estado.
-         */
-
-        activeNote =
-            null;
-
-        activeFrequency =
-            null;
-
-        candidateNote =
-            null;
-
-        candidateFrequency =
-            null;
-
-        candidateCount =
-            0;
-
-        candidateStarted =
-            null;
-
-        silenceStarted =
-            null;
+        resetDetectorState();
 
 
-        activeChord =
-            [];
-
-        candidateChord =
-            [];
-
-        candidateChordCount =
-            0;
-
-        candidateChordStarted =
-            null;
-
-
-        polyphonicDetected =
+        calibrationRunning =
             false;
 
 
-        /*
-         * Mantener la melodía grabada,
-         * pero limpiar la detección instantánea.
-         */
-
-        noteElement.textContent =
-            "—";
+        calibrationSection.classList.add(
+            "hidden"
+        );
 
 
-        frequencyElement.textContent =
-            "Toca una nota";
-
-
-        chordNotesElement.textContent =
-            "—";
-
-
-        chordNameElement.textContent =
-            "—";
+        profileSection.classList.add(
+            "hidden"
+        );
 
 
         statusElement.textContent =
@@ -3164,11 +3146,59 @@ document
         .getElementById("stop")
         .disabled =
             true;
-
     }
 );
+
+
+/* =========================================================
+   AJUSTAR CANVAS
+========================================================= */
+
+function resizeCanvas() {
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+
+    const ratio =
+        window.devicePixelRatio ||
+        1;
+
+
+    canvas.width =
+        rect.width *
+        ratio;
+
+
+    canvas.height =
+        rect.height *
+        ratio;
+
+
+    canvasContext.scale(
+        ratio,
+        ratio
+    );
+}
+
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+
+resizeCanvas();
+
+
+/* =========================================================
+   INICIO
+========================================================= */
+
+updateCalibrationInterface();
 
 </script>
 
 </body>
+</html>
 </html>

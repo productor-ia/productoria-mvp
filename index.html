@@ -162,6 +162,25 @@ Detener
         —
     </div>
 </div>
+  <div class="melody">
+    <div class="melody-title">
+        Notas simultáneas
+    </div>
+
+    <div id="chordNotes" class="melody-notes">
+        —
+    </div>
+</div>
+
+<div class="melody">
+    <div class="melody-title">
+        Acorde detectado
+    </div>
+
+    <div id="chordName" class="melody-notes">
+        —
+    </div>
+</div>
 <div class="info">
 <b>Primera prueba</b><br><br>
 ProductorIA está intentando escuchar tu instrumento
@@ -236,7 +255,11 @@ const statusElement =
 
 const melodyElement =
     document.getElementById("melodyNotes");
+const chordNotesElement =
+    document.getElementById("chordNotes");
 
+const chordNameElement =
+    document.getElementById("chordName");
 const canvas =
     document.getElementById("wave");
 

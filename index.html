@@ -12,11 +12,13 @@
 
 <title>ProductorIA</title>
 
+
 <style>
 
 * {
     box-sizing: border-box;
 }
+
 
 body {
 
@@ -28,14 +30,19 @@ body {
         Arial,
         sans-serif;
 
-    background: #101218;
+    background:
+        #101218;
 
-    color: white;
+    color:
+        white;
 
-    display: flex;
+    display:
+        flex;
 
-    justify-content: center;
+    justify-content:
+        center;
 }
+
 
 .app {
 
@@ -47,176 +54,230 @@ body {
         30px 20px;
 }
 
+
 h1 {
 
-    text-align: center;
+    text-align:
+        center;
 
-    margin:
-        0 0 5px;
+    margin-bottom:
+        5px;
 }
+
 
 .subtitle {
 
-    text-align: center;
+    text-align:
+        center;
 
-    color: #9da3b0;
+    color:
+        #9da3b0;
 
-    margin-bottom: 30px;
+    margin-bottom:
+        30px;
 }
+
 
 .card {
 
-    background: #191c24;
+    background:
+        #191c24;
 
     border:
         1px solid #303541;
 
-    border-radius: 22px;
+    border-radius:
+        22px;
 
-    padding: 25px;
+    padding:
+        25px;
 }
+
 
 .status {
 
-    text-align: center;
+    text-align:
+        center;
 
-    color: #9da3b0;
-
-    min-height: 24px;
+    color:
+        #9da3b0;
 }
+
 
 .note {
 
-    text-align: center;
+    text-align:
+        center;
 
-    font-size: 80px;
+    font-size:
+        80px;
 
-    font-weight: bold;
+    font-weight:
+        bold;
 
     margin:
         35px 0 10px;
 }
 
+
 .frequency {
 
-    text-align: center;
+    text-align:
+        center;
 
-    color: #aeb4c0;
-
-    min-height: 24px;
+    color:
+        #aeb4c0;
 }
+
 
 button {
 
-    width: 100%;
+    width:
+        100%;
 
-    padding: 16px;
+    padding:
+        16px;
 
-    margin-top: 15px;
+    margin-top:
+        15px;
 
-    border: none;
+    border:
+        none;
 
-    border-radius: 14px;
+    border-radius:
+        14px;
 
-    font-size: 17px;
+    font-size:
+        17px;
 
-    font-weight: bold;
+    font-weight:
+        bold;
 
-    cursor: pointer;
+    cursor:
+        pointer;
 }
 
-button:disabled {
-
-    opacity: 0.55;
-
-    cursor: default;
-}
 
 .start {
 
-    background: white;
+    background:
+        white;
 
-    color: #111;
+    color:
+        #111;
 }
+
 
 .stop {
 
-    background: #292e39;
+    background:
+        #292e39;
 
-    color: white;
+    color:
+        white;
 }
+
 
 canvas {
 
-    display: block;
+    width:
+        100%;
 
-    width: 100%;
+    height:
+        100px;
 
-    height: 100px;
+    margin-top:
+        25px;
 
-    margin-top: 25px;
+    background:
+        #101218;
 
-    background: #101218;
-
-    border-radius: 14px;
+    border-radius:
+        14px;
 }
+
 
 .melody,
 .chord-box {
 
-    margin-top: 20px;
+    margin-top:
+        20px;
 
-    padding: 18px;
+    padding:
+        18px;
 
-    background: #11141b;
+    background:
+        #11141b;
 
-    border-radius: 15px;
+    border-radius:
+        15px;
 }
+
 
 .melody-title {
 
-    color: #9da3b0;
+    color:
+        #9da3b0;
 
-    font-size: 14px;
+    font-size:
+        14px;
 
-    margin-bottom: 10px;
+    margin-bottom:
+        10px;
 }
+
 
 .melody-notes {
 
-    font-size: 22px;
+    font-size:
+        22px;
 
-    font-weight: bold;
+    font-weight:
+        bold;
 
-    line-height: 1.6;
+    line-height:
+        1.6;
 
-    word-break: break-word;
+    word-break:
+        break-word;
 }
+
 
 .chord-name {
 
-    font-size: 34px;
+    font-size:
+        38px;
 
-    font-weight: bold;
+    font-weight:
+        bold;
 
-    text-align: center;
+    text-align:
+        center;
 
-    padding: 10px 0;
+    padding:
+        12px 0;
 }
+
 
 .info {
 
-    margin-top: 25px;
+    margin-top:
+        25px;
 
-    padding: 18px;
+    padding:
+        18px;
 
-    background: #11141b;
+    background:
+        #11141b;
 
-    border-radius: 15px;
+    border-radius:
+        15px;
 
-    color: #b8bec9;
+    color:
+        #b8bec9;
 
-    line-height: 1.5;
+    line-height:
+        1.5;
 }
 
 </style>
@@ -231,30 +292,39 @@ canvas {
 
 
 <h1>
-ProductorIA
+    ProductorIA
 </h1>
 
 
 <div class="subtitle">
-Tu compañero compositor
+    Tu compañero compositor
 </div>
 
 
 <div class="card">
 
 
-<div id="status" class="status">
-Micrófono detenido
+<div
+    id="status"
+    class="status"
+>
+    Micrófono detenido
 </div>
 
 
-<div id="note" class="note">
-—
+<div
+    id="note"
+    class="note"
+>
+    —
 </div>
 
 
-<div id="frequency" class="frequency">
-Toca una nota
+<div
+    id="frequency"
+    class="frequency"
+>
+    Toca una nota
 </div>
 
 
@@ -265,7 +335,7 @@ Toca una nota
     id="start"
     class="start"
 >
-🎙 Activar micrófono
+    🎙 Activar micrófono
 </button>
 
 
@@ -274,13 +344,14 @@ Toca una nota
     class="stop"
     disabled
 >
-Detener
+    Detener
 </button>
 
 
-<!-- =====================================================
+
+<!-- =====================================
      MELODÍA
-===================================================== -->
+====================================== -->
 
 <div class="melody">
 
@@ -298,9 +369,10 @@ Detener
 </div>
 
 
-<!-- =====================================================
+
+<!-- =====================================
      NOTAS SIMULTÁNEAS
-===================================================== -->
+====================================== -->
 
 <div class="melody">
 
@@ -318,9 +390,10 @@ Detener
 </div>
 
 
-<!-- =====================================================
+
+<!-- =====================================
      ACORDE
-===================================================== -->
+====================================== -->
 
 <div class="chord-box">
 
@@ -338,36 +411,34 @@ Detener
 </div>
 
 
-<!-- =====================================================
-     INFORMACIÓN
-===================================================== -->
 
 <div class="info">
 
 <b>
-ProductorIA — detección polifónica
+    ProductorIA — detección polifónica
 </b>
 
 <br><br>
 
-ProductorIA analiza el sonido del instrumento
+El sistema analiza el sonido del instrumento
 para detectar notas individuales y varias
-frecuencias simultáneas.
+frecuencias fundamentales al mismo tiempo.
 
 <br><br>
-
-Primera etapa de acordes:
 
 <strong>
-Mayores y menores.
+Etapa actual:
 </strong>
+
+<br>
+
+Acordes mayores y menores.
 
 <br><br>
 
-La detección está diseñada para mantener
-estable el resultado y reducir falsas notas
-producidas por los armónicos naturales
-de la guitarra.
+Las siguientes etapas podrán incorporar
+séptimas, sus2, sus4, disminuidos,
+aumentados y otras estructuras.
 
 </div>
 
@@ -375,16 +446,10 @@ de la guitarra.
 </div>
 
 </div>
+
 
 
 <script>
-
-
-/* =========================================================
-   PRODUCTOR IA
-   DETECTOR DE NOTAS + DETECTOR DE ACORDES
-========================================================= */
-
 
 /* =========================================================
    AUDIO
@@ -402,74 +467,49 @@ let animation = null;
 
 
 /* =========================================================
-   CONFIGURACIÓN GENERAL
+   CONFIGURACIÓN
 ========================================================= */
 
-
 /*
- * Nivel mínimo de señal.
+ * Detector monofónico.
  */
 
 const RMS_THRESHOLD = 0.008;
 
-
-/*
- * Estabilidad para aceptar
- * una nueva nota.
- */
-
 const STABILITY_REQUIRED = 5;
-
-
-/*
- * Diferencia mínima entre notas.
- */
 
 const MIN_NOTE_CHANGE_CENTS = 45;
 
-
-/*
- * Tiempo mínimo de estabilidad.
- */
-
 const NEW_NOTE_TIME = 90;
 
-
-/*
- * Silencio necesario para
- * liberar una nota.
- */
-
-const RELEASE_TIME = 160;
-
-
-/*
- * Ventana de melodía.
- */
+const RELEASE_TIME = 120;
 
 const MELODY_WINDOW = 5000;
 
 
-/* =========================================================
-   CONFIGURACIÓN DEL DETECTOR DE ACORDES
-========================================================= */
-
-
 /*
- * Rango fundamental de guitarra.
+ * Detector polifónico.
  */
 
 const CHORD_MIN_FREQ = 75;
 
-const CHORD_MAX_FREQ = 380;
+const CHORD_MAX_FREQ = 400;
 
 
 /*
- * Número máximo de notas
- * cromáticas mostradas.
+ * Umbral de señal para permitir
+ * análisis polifónico.
  */
 
-const MAX_CHORD_NOTES = 6;
+const CHORD_RMS_THRESHOLD = 0.015;
+
+
+/*
+ * Número de armónicos utilizados
+ * para buscar cada fundamental.
+ */
+
+const MAX_HARMONICS = 6;
 
 
 /*
@@ -478,38 +518,17 @@ const MAX_CHORD_NOTES = 6;
 
 const CHORD_STABILITY_REQUIRED = 6;
 
-
-/*
- * Tiempo mínimo para aceptar
- * un nuevo acorde.
- */
-
-const CHORD_NEW_TIME = 160;
+const CHORD_STABILITY_TIME = 160;
 
 
 /*
- * Cantidad mínima de energía
- * respecto de la nota dominante.
+ * Para evitar que una sola nota
+ * dominante genere un acorde falso.
  */
 
-const CHORD_PEAK_RATIO = 0.32;
+const MIN_CHORD_NOTES = 3;
 
-
-/*
- * Diferencia máxima permitida
- * entre energía de notas para
- * considerar un conjunto.
- */
-
-const CHORD_MIN_NOTES = 3;
-
-
-/*
- * Número de armónicos utilizados
- * para calcular energía cromática.
- */
-
-const HARMONICS_TO_ANALYZE = 4;
+const MAX_CHORD_NOTES = 5;
 
 
 /* =========================================================
@@ -517,32 +536,91 @@ const HARMONICS_TO_ANALYZE = 4;
 ========================================================= */
 
 const noteElement =
-    document.getElementById("note");
+    document.getElementById(
+        "note"
+    );
+
 
 const frequencyElement =
-    document.getElementById("frequency");
+    document.getElementById(
+        "frequency"
+    );
+
 
 const statusElement =
-    document.getElementById("status");
+    document.getElementById(
+        "status"
+    );
+
 
 const melodyElement =
-    document.getElementById("melodyNotes");
+    document.getElementById(
+        "melodyNotes"
+    );
+
 
 const chordNotesElement =
-    document.getElementById("chordNotes");
+    document.getElementById(
+        "chordNotes"
+    );
+
 
 const chordNameElement =
-    document.getElementById("chordName");
+    document.getElementById(
+        "chordName"
+    );
+
 
 const canvas =
-    document.getElementById("wave");
+    document.getElementById(
+        "wave"
+    );
+
 
 const canvasContext =
-    canvas.getContext("2d");
+    canvas.getContext(
+        "2d"
+    );
 
 
 /* =========================================================
-   NOTAS CROMÁTICAS
+   ESTADO MONOFÓNICO
+========================================================= */
+
+let activeNote = null;
+
+let activeFrequency = null;
+
+let candidateNote = null;
+
+let candidateFrequency = null;
+
+let candidateCount = 0;
+
+let candidateStarted = null;
+
+let silenceStarted = null;
+
+let detectedNotes = [];
+
+let lastRecordedTime = 0;
+
+
+/* =========================================================
+   ESTADO POLIFÓNICO
+========================================================= */
+
+let activeChord = [];
+
+let candidateChord = [];
+
+let candidateChordCount = 0;
+
+let candidateChordStarted = null;
+
+
+/* =========================================================
+   NOTAS
 ========================================================= */
 
 const noteNames = [
@@ -564,74 +642,31 @@ const noteNames = [
 
 
 /* =========================================================
-   ESTADO MONOFÓNICO
+   UTILIDADES
 ========================================================= */
 
-let activeNote = null;
-
-let activeFrequency = null;
-
-let candidateNote = null;
-
-let candidateFrequency = null;
-
-let candidateCount = 0;
-
-let candidateStarted = null;
-
-let silenceStarted = null;
-
-
-/* =========================================================
-   ESTADO DE MELODÍA
-========================================================= */
-
-let detectedNotes = [];
-
-let lastRecordedTime = 0;
-
-
-/* =========================================================
-   ESTADO POLIFÓNICO
-========================================================= */
-
-let activeChord = [];
-
-let candidateChord = [];
-
-let candidateChordCount = 0;
-
-let candidateChordStarted = null;
-
-let chordLastSignalTime = 0;
-
-
-/* =========================================================
-   UTILIDADES MUSICALES
-========================================================= */
-
-
-/*
- * Frecuencia → MIDI.
- */
-
-function frequencyToMidi(frequency) {
+function frequencyToMidi(
+    frequency
+) {
 
     return (
+
         69 +
+
         12 *
+
         Math.log2(
             frequency / 440
         )
+
     );
+
 }
 
 
-/*
- * Frecuencia → nota.
- */
-
-function frequencyToNote(frequency) {
+function frequencyToNote(
+    frequency
+) {
 
     if (
         !frequency ||
@@ -639,6 +674,7 @@ function frequencyToNote(frequency) {
     ) {
 
         return null;
+
     }
 
 
@@ -656,23 +692,20 @@ function frequencyToNote(frequency) {
             12
         ) % 12
     ];
+
 }
 
 
-/*
- * Nota → clase cromática.
- */
+function noteToPitchClass(
+    note
+) {
 
-function noteToPitchClass(note) {
+    return noteNames.indexOf(
+        note
+    );
 
-    return noteNames.indexOf(note);
 }
 
-
-/*
- * Diferencia entre frecuencias
- * en cents.
- */
 
 function centsDifference(
     frequency1,
@@ -685,59 +718,33 @@ function centsDifference(
     ) {
 
         return Infinity;
+
     }
 
 
     return Math.abs(
 
         1200 *
+
         Math.log2(
             frequency1 /
             frequency2
         )
 
     );
-}
 
-
-/*
- * Distancia circular entre
- * dos clases cromáticas.
- */
-
-function pitchClassDistance(
-    a,
-    b
-) {
-
-    const difference =
-        Math.abs(
-            a - b
-        );
-
-
-    return Math.min(
-        difference,
-        12 - difference
-    );
 }
 
 
 /* =========================================================
-   DETECTOR DE PITCH MONOFÓNICO
+   RMS
 ========================================================= */
 
-function detectPitch(
-    buffer,
-    sampleRate
+function calculateRMS(
+    buffer
 ) {
 
-
-    /* -----------------------------------------------------
-       RMS
-    ----------------------------------------------------- */
-
-    let rms = 0;
+    let sum = 0;
 
 
     for (
@@ -746,34 +753,54 @@ function detectPitch(
         i++
     ) {
 
-        rms +=
+        sum +=
             buffer[i] *
             buffer[i];
+
     }
 
 
-    rms =
-        Math.sqrt(
-            rms /
-            buffer.length
+    return Math.sqrt(
+
+        sum /
+        buffer.length
+
+    );
+
+}
+
+
+/* =========================================================
+   DETECTOR MONOFÓNICO
+========================================================= */
+
+function detectPitch(
+    buffer,
+    sampleRate
+) {
+
+    const rms =
+        calculateRMS(
+            buffer
         );
 
 
     if (
-        rms < RMS_THRESHOLD
+        rms <
+        RMS_THRESHOLD
     ) {
 
         return null;
+
     }
 
 
-    /* -----------------------------------------------------
-       RANGO
-    ----------------------------------------------------- */
+    const minFrequency =
+        75;
 
-    const minFrequency = 75;
 
-    const maxFrequency = 380;
+    const maxFrequency =
+        400;
 
 
     const minLag =
@@ -790,14 +817,8 @@ function detectPitch(
         );
 
 
-    let bestLag = 0;
+    const candidates = [];
 
-    let bestScore = -1;
-
-
-    /* -----------------------------------------------------
-       AUTOCORRELACIÓN
-    ----------------------------------------------------- */
 
     for (
         let lag = minLag;
@@ -812,21 +833,21 @@ function detectPitch(
         let energy2 = 0;
 
 
-        /*
-         * Paso 2 para reducir carga.
-         */
-
         for (
             let i = 0;
-            i < buffer.length - lag;
+            i <
+            buffer.length - lag;
             i += 2
         ) {
 
             const a =
                 buffer[i];
 
+
             const b =
-                buffer[i + lag];
+                buffer[
+                    i + lag
+                ];
 
 
             sum +=
@@ -839,6 +860,7 @@ function detectPitch(
 
             energy2 +=
                 b * b;
+
         }
 
 
@@ -848,6 +870,7 @@ function detectPitch(
         ) {
 
             continue;
+
         }
 
 
@@ -860,129 +883,115 @@ function detectPitch(
 
 
         if (
-            score > bestScore
+            score > 0.20
         ) {
 
-            bestScore =
-                score;
+            candidates.push({
 
-            bestLag =
-                lag;
+                frequency:
+                    sampleRate /
+                    lag,
+
+                score:
+                    score
+
+            });
+
         }
 
     }
 
 
     if (
-        bestLag === 0 ||
-        bestScore < 0.20
+        candidates.length === 0
     ) {
 
         return null;
+
+    }
+
+
+    candidates.sort(
+
+        (a, b) =>
+            b.score -
+            a.score
+
+    );
+
+
+    let selected =
+        candidates[0];
+
+
+    /*
+     * Corrección por segundo armónico.
+     */
+
+    const doubleFrequency =
+        selected.frequency * 2;
+
+
+    for (
+        const candidate
+        of candidates
+    ) {
+
+        if (
+
+            Math.abs(
+                candidate.frequency -
+                doubleFrequency
+            ) <= 4
+
+            &&
+
+            candidate.score >=
+                selected.score * 0.50
+
+        ) {
+
+            selected =
+                candidate;
+
+            break;
+
+        }
+
     }
 
 
     /*
-     * Frecuencia inicial.
+     * Corrección por tercer armónico.
      */
 
-    let frequency =
-        sampleRate /
-        bestLag;
+    const tripleFrequency =
+        selected.frequency * 3;
 
 
-    /*
-     * =====================================================
-     * CORRECCIÓN DE OCTAVA
-     * =====================================================
-     *
-     * Evitamos que la autocorrelación
-     * se quede en una frecuencia
-     * exactamente la mitad.
-     */
-
-    const possibleDouble =
-        frequency * 2;
-
-
-    if (
-        possibleDouble <= maxFrequency
+    for (
+        const candidate
+        of candidates
     ) {
 
-        const doubleLag =
-            Math.round(
-                sampleRate /
-                possibleDouble
-            );
-
-
         if (
-            doubleLag >= minLag &&
-            doubleLag <= maxLag
+
+            Math.abs(
+                candidate.frequency -
+                tripleFrequency
+            ) <= 4
+
+            &&
+
+            candidate.score >=
+                selected.score * 0.50
+
         ) {
 
-            let sum = 0;
+            selected =
+                candidate;
 
-            let energy1 = 0;
-
-            let energy2 = 0;
-
-
-            for (
-                let i = 0;
-                i < buffer.length - doubleLag;
-                i += 2
-            ) {
-
-                const a =
-                    buffer[i];
-
-                const b =
-                    buffer[
-                        i + doubleLag
-                    ];
-
-
-                sum +=
-                    a * b;
-
-                energy1 +=
-                    a * a;
-
-                energy2 +=
-                    b * b;
-            }
-
-
-            if (
-                energy1 > 0 &&
-                energy2 > 0
-            ) {
-
-                const doubleScore =
-                    sum /
-                    Math.sqrt(
-                        energy1 *
-                        energy2
-                    );
-
-
-                /*
-                 * Solo subimos una octava
-                 * si el candidato es razonable.
-                 */
-
-                if (
-                    doubleScore >=
-                    bestScore * 0.82
-                ) {
-
-                    frequency =
-                        sampleRate /
-                        doubleLag;
-                }
-
-            }
+            break;
 
         }
 
@@ -992,10 +1001,10 @@ function detectPitch(
     return {
 
         frequency:
-            frequency,
+            selected.frequency,
 
         score:
-            bestScore
+            selected.score
 
     };
 
@@ -1003,32 +1012,18 @@ function detectPitch(
 
 
 /* =========================================================
-   DETECTOR POLIFÓNICO
+   CONVERTIR FFT A MAGNITUD
 ========================================================= */
 
-function detectChordNotes() {
+function getSpectrum() {
 
-
-    if (
-        !analyser ||
-        !audioContext
-    ) {
-
-        return [];
-    }
-
-
-    const fftSize =
-        analyser.fftSize;
-
-
-    const frequencyBinCount =
+    const size =
         analyser.frequencyBinCount;
 
 
     const spectrum =
         new Float32Array(
-            frequencyBinCount
+            size
         );
 
 
@@ -1037,209 +1032,460 @@ function detectChordNotes() {
     );
 
 
+    return spectrum;
+
+}
+
+
+/* =========================================================
+   MAGNITUD DE UNA FRECUENCIA
+========================================================= */
+
+function getMagnitudeAtFrequency(
+    spectrum,
+    frequency,
+    sampleRate,
+    fftSize
+) {
+
+    if (
+        frequency <= 0
+    ) {
+
+        return 0;
+
+    }
+
+
+    const bin =
+        Math.round(
+
+            frequency *
+            fftSize /
+            sampleRate
+
+        );
+
+
+    if (
+        bin < 0 ||
+        bin >= spectrum.length
+    ) {
+
+        return 0;
+
+    }
+
+
+    /*
+     * Miramos también los bins vecinos
+     * porque la frecuencia rara vez cae
+     * exactamente en un bin FFT.
+     */
+
+    let maximum =
+        -Infinity;
+
+
+    for (
+        let offset = -1;
+        offset <= 1;
+        offset++
+    ) {
+
+        const index =
+            bin + offset;
+
+
+        if (
+            index >= 0 &&
+            index <
+                spectrum.length
+        ) {
+
+            maximum =
+                Math.max(
+                    maximum,
+                    spectrum[index]
+                );
+
+        }
+
+    }
+
+
+    if (
+        maximum === -Infinity
+    ) {
+
+        return 0;
+
+    }
+
+
+    /*
+     * Convertimos dB a magnitud lineal.
+     */
+
+    return Math.pow(
+        10,
+        maximum / 20
+    );
+
+}
+
+
+/* =========================================================
+   SALIENCIA DE UNA FRECUENCIA
+========================================================= */
+
+/*
+ * Aquí está el cambio principal.
+ *
+ * No preguntamos simplemente:
+ *
+ * "¿Hay energía en 130 Hz?"
+ *
+ * Buscamos:
+ *
+ * fundamental
+ * + segundo armónico
+ * + tercer armónico
+ * + cuarto...
+ *
+ * Una nota real produce una estructura
+ * armónica coherente.
+ */
+
+function calculatePitchSalience(
+    frequency,
+    spectrum,
+    sampleRate,
+    fftSize
+) {
+
+    let score = 0;
+
+    let totalWeight = 0;
+
+
+    const harmonicWeights = [
+
+        1.00,
+        0.75,
+        0.55,
+        0.40,
+        0.30,
+        0.20
+
+    ];
+
+
+    for (
+        let harmonic = 1;
+        harmonic <= MAX_HARMONICS;
+        harmonic++
+    ) {
+
+        const harmonicFrequency =
+            frequency *
+            harmonic;
+
+
+        if (
+            harmonicFrequency >
+            sampleRate / 2
+        ) {
+
+            break;
+
+        }
+
+
+        const magnitude =
+            getMagnitudeAtFrequency(
+
+                spectrum,
+
+                harmonicFrequency,
+
+                sampleRate,
+
+                fftSize
+
+            );
+
+
+        const weight =
+            harmonicWeights[
+                harmonic - 1
+            ];
+
+
+        score +=
+            magnitude *
+            weight;
+
+
+        totalWeight +=
+            weight;
+
+    }
+
+
+    if (
+        totalWeight === 0
+    ) {
+
+        return 0;
+
+    }
+
+
+    return (
+        score /
+        totalWeight
+    );
+
+}
+
+
+/* =========================================================
+   DETECTOR POLIFÓNICO
+========================================================= */
+
+function detectChordNotes(
+    timeBuffer
+) {
+
+    if (
+        !analyser ||
+        !audioContext
+    ) {
+
+        return [];
+
+    }
+
+
+    /*
+     * Primero comprobar que realmente
+     * existe una señal.
+     */
+
+    const rms =
+        calculateRMS(
+            timeBuffer
+        );
+
+
+    if (
+        rms <
+        CHORD_RMS_THRESHOLD
+    ) {
+
+        return [];
+
+    }
+
+
+    const spectrum =
+        getSpectrum();
+
+
     const sampleRate =
         audioContext.sampleRate;
 
 
-    /*
-     * Energía cromática.
-     */
-
-    const noteEnergy =
-        new Array(12).fill(0);
+    const fftSize =
+        analyser.fftSize;
 
 
     /*
-     * También guardamos
-     * la energía fundamental.
+     * Generamos candidatos cromáticos.
+     *
+     * Desde aproximadamente C2
+     * hasta G4.
      */
 
-    const fundamentalEnergy =
-        new Array(12).fill(0);
+    const candidatePitches = [];
 
 
-    /*
-     * Analizar cada bin.
-     */
+    const minMidi =
+        Math.ceil(
+            frequencyToMidi(
+                CHORD_MIN_FREQ
+            )
+        );
+
+
+    const maxMidi =
+        Math.floor(
+            frequencyToMidi(
+                CHORD_MAX_FREQ
+            )
+        );
+
 
     for (
-        let i = 1;
-        i < frequencyBinCount;
-        i++
+        let midi = minMidi;
+        midi <= maxMidi;
+        midi++
     ) {
 
-        const db =
-            spectrum[i];
-
-
-        if (
-            !Number.isFinite(db)
-        ) {
-
-            continue;
-        }
-
-
-        /*
-         * Convertir dB a magnitud
-         * aproximada.
-         */
-
-        const magnitude =
-            Math.pow(
-                10,
-                db / 20
-            );
-
-
-        if (
-            magnitude <= 0
-        ) {
-
-            continue;
-        }
-
-
         const frequency =
-            i *
-            sampleRate /
-            fftSize;
-
-
-        if (
-            frequency <
-                CHORD_MIN_FREQ ||
-            frequency >
-                CHORD_MAX_FREQ *
-                HARMONICS_TO_ANALYZE
-        ) {
-
-            continue;
-        }
-
-
-        /*
-         * MIDI.
-         */
-
-        const midi =
-            frequencyToMidi(
-                frequency
+            440 *
+            Math.pow(
+                2,
+                (
+                    midi - 69
+                ) / 12
             );
 
 
+        const salience =
+            calculatePitchSalience(
+
+                frequency,
+
+                spectrum,
+
+                sampleRate,
+
+                fftSize
+
+            );
+
+
+        candidatePitches.push({
+
+            midi:
+                midi,
+
+            frequency:
+                frequency,
+
+            note:
+                noteNames[
+                    (
+                        midi % 12 +
+                        12
+                    ) % 12
+                ],
+
+            salience:
+                salience
+
+        });
+
+    }
+
+
+    /*
+     * Ordenar por saliencia.
+     */
+
+    candidatePitches.sort(
+
+        (a, b) =>
+            b.salience -
+            a.salience
+
+    );
+
+
+    if (
+        candidatePitches.length === 0
+    ) {
+
+        return [];
+
+    }
+
+
+    const strongest =
+        candidatePitches[0].salience;
+
+
+    if (
+        strongest <= 0
+    ) {
+
+        return [];
+
+    }
+
+
+    /*
+     * Agrupar por clase de nota.
+     *
+     * Por ejemplo:
+     *
+     * C2
+     * C3
+     * C4
+     *
+     * terminan representando
+     * la misma nota C.
+     */
+
+    const pitchClassEnergy =
+        new Array(12).fill(0);
+
+
+    for (
+        const candidate
+        of candidatePitches
+    ) {
+
+        const normalized =
+            candidate.salience /
+            strongest;
+
+
         /*
-         * Nota cromática más cercana.
+         * Ignorar candidatos muy débiles.
          */
 
-        const roundedMidi =
-            Math.round(midi);
+        if (
+            normalized <
+            0.25
+        ) {
+
+            continue;
+
+        }
 
 
-        const pitchClass =
+        const pc =
             (
-                roundedMidi % 12 +
+                candidate.midi % 12 +
                 12
             ) % 12;
 
 
         /*
-         * Afinación relativa.
+         * El mejor candidato de cada
+         * clase cromática tiene prioridad.
          */
 
-        const distance =
-            Math.abs(
-                midi -
-                roundedMidi
+        pitchClassEnergy[pc] =
+            Math.max(
+
+                pitchClassEnergy[pc],
+
+                normalized
+
             );
-
-
-        /*
-         * Reducir contribuciones
-         * muy alejadas del centro
-         * de la nota.
-         */
-
-        if (
-            distance > 0.45
-        ) {
-
-            continue;
-        }
-
-
-        const tuningWeight =
-            1 -
-            distance;
-
-
-        /*
-         * Buscar si esta frecuencia
-         * puede ser un armónico.
-         */
-
-        let harmonicWeight = 1;
-
-
-        /*
-         * Las frecuencias superiores
-         * reciben menos peso.
-         */
-
-        if (
-            frequency > 500
-        ) {
-
-            harmonicWeight =
-                0.55;
-
-        } else if (
-            frequency > 700
-        ) {
-
-            harmonicWeight =
-                0.35;
-        }
-
-
-        const weightedEnergy =
-            magnitude *
-            tuningWeight *
-            harmonicWeight;
-
-
-        noteEnergy[pitchClass] +=
-            weightedEnergy;
-
-
-        /*
-         * Solo consideramos como
-         * energía fundamental la zona
-         * baja de cada nota.
-         */
-
-        if (
-            frequency >=
-                CHORD_MIN_FREQ &&
-            frequency <=
-                CHORD_MAX_FREQ
-        ) {
-
-            fundamentalEnergy[pitchClass] +=
-                weightedEnergy;
-        }
 
     }
 
 
     /*
-     * =====================================================
-     * COMBINAR ENERGÍA
-     * =====================================================
+     * Ordenar las clases de nota.
      */
 
-    const combinedEnergy =
-        new Array(12).fill(0);
+    const pitchClasses = [];
 
 
     for (
@@ -1248,77 +1494,17 @@ function detectChordNotes() {
         pc++
     ) {
 
-        /*
-         * La fundamental tiene
-         * mayor importancia.
-         */
-
-        combinedEnergy[pc] =
-            (
-                fundamentalEnergy[pc] *
-                1.8
-            ) +
-            (
-                noteEnergy[pc] *
-                0.7
-            );
-
-    }
-
-
-    const maxEnergy =
-        Math.max(
-            ...combinedEnergy
-        );
-
-
-    if (
-        !Number.isFinite(maxEnergy) ||
-        maxEnergy <= 0
-    ) {
-
-        return [];
-    }
-
-
-    /*
-     * =====================================================
-     * OBTENER CANDIDATOS
-     * =====================================================
-     */
-
-    const candidates = [];
-
-
-    for (
-        let pc = 0;
-        pc < 12;
-        pc++
-    ) {
-
-        const relative =
-            combinedEnergy[pc] /
-            maxEnergy;
-
-
         if (
-            relative >=
-            CHORD_PEAK_RATIO
+            pitchClassEnergy[pc] > 0
         ) {
 
-            candidates.push({
+            pitchClasses.push({
 
                 note:
                     noteNames[pc],
 
-                pitchClass:
-                    pc,
-
                 energy:
-                    combinedEnergy[pc],
-
-                relative:
-                    relative
+                    pitchClassEnergy[pc]
 
             });
 
@@ -1327,11 +1513,7 @@ function detectChordNotes() {
     }
 
 
-    /*
-     * Ordenar por energía.
-     */
-
-    candidates.sort(
+    pitchClasses.sort(
 
         (a, b) =>
             b.energy -
@@ -1341,18 +1523,23 @@ function detectChordNotes() {
 
 
     /*
-     * Limitar.
+     * Mantener solamente las clases
+     * cromáticas más fuertes.
      */
 
-    return candidates
-        .slice(
-            0,
-            MAX_CHORD_NOTES
-        )
-        .map(
-            item =>
-                item.note
-        );
+    const result =
+        pitchClasses
+            .slice(
+                0,
+                MAX_CHORD_NOTES
+            )
+            .map(
+                item =>
+                    item.note
+            );
+
+
+    return result;
 
 }
 
@@ -1366,24 +1553,22 @@ function sameNoteSet(
     notes2
 ) {
 
-
     if (
         notes1.length !==
         notes2.length
     ) {
 
         return false;
+
     }
 
 
     const a =
-        [...notes1]
-        .sort();
+        [...notes1].sort();
 
 
     const b =
-        [...notes2]
-        .sort();
+        [...notes2].sort();
 
 
     for (
@@ -1397,6 +1582,7 @@ function sameNoteSet(
         ) {
 
             return false;
+
         }
 
     }
@@ -1408,19 +1594,27 @@ function sameNoteSet(
 
 
 /* =========================================================
-   TIPOS DE ACORDES
+   TABLA DE ACORDES
 ========================================================= */
 
 const chordTypes = [
 
     {
-        suffix: "",
-        intervals: [0, 4, 7]
+        suffix:
+            "",
+
+        intervals:
+            [0, 4, 7]
+
     },
 
     {
-        suffix: "m",
-        intervals: [0, 3, 7]
+        suffix:
+            "m",
+
+        intervals:
+            [0, 3, 7]
+
     }
 
 ];
@@ -1434,83 +1628,81 @@ function identifyChord(
     notes
 ) {
 
+    /*
+     * Para nuestra primera etapa
+     * necesitamos al menos 3 clases.
+     */
 
     if (
         notes.length <
-        CHORD_MIN_NOTES
+        MIN_CHORD_NOTES
     ) {
 
         return null;
+
     }
 
-
-    /*
-     * Convertir notas a clases.
-     */
 
     const pitchClasses =
         notes
-        .map(
-            note =>
-                noteToPitchClass(
-                    note
-                )
-        )
-        .filter(
-            pc =>
-                pc >= 0
-        );
 
-
-    /*
-     * Eliminar duplicados.
-     */
-
-    const uniquePitchClasses =
-        [
-            ...new Set(
-                pitchClasses
+            .map(
+                note =>
+                    noteToPitchClass(
+                        note
+                    )
             )
-        ];
+
+            .filter(
+                pc =>
+                    pc >= 0
+            );
 
 
     if (
-        uniquePitchClasses.length <
-        CHORD_MIN_NOTES
+        pitchClasses.length <
+        MIN_CHORD_NOTES
     ) {
 
         return null;
+
     }
 
 
-    let bestMatch = null;
+    const detectedSet =
+        new Set(
+            pitchClasses
+        );
+
+
+    let bestMatch =
+        null;
 
 
     /*
-     * Probar cada nota como
-     * posible raíz.
+     * Probar cada nota como fundamental.
      */
 
     for (
-        const root
-        of uniquePitchClasses
+        let root = 0;
+        root < 12;
+        root++
     ) {
-
 
         for (
             const type
             of chordTypes
         ) {
 
-
             const expected =
-                type.intervals
-                .map(
+                type.intervals.map(
+
                     interval =>
                         (
                             root +
                             interval
                         ) % 12
+
                 );
 
 
@@ -1519,16 +1711,17 @@ function identifyChord(
 
             for (
                 const pitch
-                of uniquePitchClasses
+                of expected
             ) {
 
                 if (
-                    expected.includes(
+                    detectedSet.has(
                         pitch
                     )
                 ) {
 
                     matches++;
+
                 }
 
             }
@@ -1539,7 +1732,7 @@ function identifyChord(
 
             for (
                 const pitch
-                of uniquePitchClasses
+                of detectedSet
             ) {
 
                 if (
@@ -1549,49 +1742,35 @@ function identifyChord(
                 ) {
 
                     extras++;
+
                 }
 
             }
 
 
             /*
-             * Todas las notas esperadas
-             * deben estar presentes para
-             * una identificación fuerte.
-             */
-
-            const missing =
-                expected.length -
-                matches;
-
-
-            /*
-             * Puntuación.
-             */
-
-            let score =
-                matches * 2;
-
-            score -=
-                extras * 1.5;
-
-            score -=
-                missing * 1.2;
-
-
-            /*
-             * Bonificación por coincidencia
-             * completa.
+             * Para esta primera etapa
+             * exigimos las 3 notas del
+             * acorde.
              */
 
             if (
-                matches ===
-                expected.length &&
-                extras === 0
+                matches < 3
             ) {
 
-                score += 5;
+                continue;
+
             }
+
+
+            /*
+             * Las notas extras penalizan
+             * fuertemente el resultado.
+             */
+
+            const score =
+                matches -
+                extras * 1.2;
 
 
             if (
@@ -1615,10 +1794,7 @@ function identifyChord(
                         matches,
 
                     extras:
-                        extras,
-
-                    missing:
-                        missing
+                        extras
 
                 };
 
@@ -1634,45 +1810,21 @@ function identifyChord(
     ) {
 
         return null;
+
     }
 
 
     /*
-     * Exigir las tres notas
-     * de un acorde mayor/menor.
+     * No aceptar conjuntos con demasiadas
+     * notas ajenas.
      */
 
     if (
-        bestMatch.matches < 3
+        bestMatch.extras > 1
     ) {
 
         return null;
-    }
 
-
-    /*
-     * No aceptar dos o más
-     * notas extrañas.
-     */
-
-    if (
-        bestMatch.extras >= 2
-    ) {
-
-        return null;
-    }
-
-
-    /*
-     * Exigir coincidencia suficiente.
-     */
-
-    if (
-        bestMatch.missing > 0 &&
-        bestMatch.extras > 0
-    ) {
-
-        return null;
     }
 
 
@@ -1680,7 +1832,9 @@ function identifyChord(
 
         noteNames[
             bestMatch.root
-        ] +
+        ]
+
+        +
 
         bestMatch.suffix
 
@@ -1690,70 +1844,66 @@ function identifyChord(
 
 
 /* =========================================================
-   PROCESAR DETECCIÓN DEL ACORDE
+   PROCESAR ACORDE
 ========================================================= */
 
-function processChordDetection() {
-
+function processChordDetection(
+    timeBuffer
+) {
 
     const notes =
-        detectChordNotes();
+        detectChordNotes(
+            timeBuffer
+        );
 
 
     /*
-     * No hay suficientes notas.
+     * No hay señal suficiente.
+     *
+     * IMPORTANTE:
+     * no mostramos basura.
      */
 
     if (
-        notes.length < 2
+        notes.length <
+        MIN_CHORD_NOTES
     ) {
 
+        candidateChord =
+            [];
+
+        candidateChordCount =
+            0;
+
+        candidateChordStarted =
+            null;
+
+
         /*
-         * Si pasa suficiente tiempo
-         * sin señal polifónica,
-         * liberar candidato.
+         * Si no hay acorde activo,
+         * limpiar completamente.
          */
 
         if (
-            Date.now() -
-            chordLastSignalTime >
-            RELEASE_TIME
+            activeChord.length === 0
         ) {
 
-            candidateChord =
-                [];
+            chordNotesElement.textContent =
+                "—";
 
-            candidateChordCount =
-                0;
-
-            candidateChordStarted =
-                null;
+            chordNameElement.textContent =
+                "—";
 
         }
 
 
         return;
+
     }
 
 
-    chordLastSignalTime =
-        Date.now();
-
-
     /*
-     * Mostrar notas simultáneas.
-     */
-
-    chordNotesElement.textContent =
-        notes.join(
-            " · "
-        );
-
-
-    /*
-     * =====================================================
-     * ESTABILIDAD
-     * =====================================================
+     * Candidato nuevo.
      */
 
     if (
@@ -1780,66 +1930,76 @@ function processChordDetection() {
 
 
     /*
-     * =====================================================
-     * ACEPTAR ACORDE
-     * =====================================================
+     * Solo mostrar candidato
+     * cuando haya estabilidad.
      */
 
     if (
 
         candidateChordCount >=
-            CHORD_STABILITY_REQUIRED &&
+            CHORD_STABILITY_REQUIRED
 
-        candidateChordStarted !== null &&
+        &&
+
+        candidateChordStarted !==
+            null
+
+        &&
 
         Date.now() -
             candidateChordStarted >=
-            CHORD_NEW_TIME
+            CHORD_STABILITY_TIME
 
     ) {
 
+        const chord =
+            identifyChord(
+                candidateChord
+            );
+
+
+        /*
+         * Si es un acorde reconocido,
+         * aceptarlo.
+         */
 
         if (
-            !sameNoteSet(
-                candidateChord,
-                activeChord
-            )
+            chord
         ) {
 
+            activeChord =
+                [...candidateChord];
 
-            const detectedChord =
-                identifyChord(
-                    candidateChord
+
+            chordNotesElement.textContent =
+                activeChord.join(
+                    " · "
                 );
 
 
+            chordNameElement.textContent =
+                chord;
+
+        } else {
+
             /*
-             * Solo actualizar el acorde
-             * si conseguimos una identificación.
+             * Mostrar las notas solamente
+             * si permanecen estables,
+             * pero no inventar un nombre.
              */
 
-            if (
-                detectedChord
-            ) {
-
-                activeChord =
-                    [...candidateChord];
+            activeChord =
+                [...candidateChord];
 
 
-                chordNameElement.textContent =
-                    detectedChord;
+            chordNotesElement.textContent =
+                activeChord.join(
+                    " · "
+                );
 
-            } else {
 
-                /*
-                 * Si no podemos identificarlo,
-                 * mostrar estado informativo.
-                 */
-
-                chordNameElement.textContent =
-                    "Acorde no identificado";
-
-            }
+            chordNameElement.textContent =
+                "Acorde no identificado";
 
         }
 
@@ -1852,81 +2012,17 @@ function processChordDetection() {
    ONDA
 ========================================================= */
 
-function resizeCanvas() {
-
-
-    const rect =
-        canvas.getBoundingClientRect();
-
-
-    const pixelRatio =
-        window.devicePixelRatio ||
-        1;
-
-
-    canvas.width =
-        Math.max(
-            1,
-            Math.floor(
-                rect.width *
-                pixelRatio
-            )
-        );
-
-
-    canvas.height =
-        Math.max(
-            1,
-            Math.floor(
-                rect.height *
-                pixelRatio
-            )
-        );
-
-
-    canvasContext.setTransform(
-        pixelRatio,
-        0,
-        0,
-        pixelRatio,
-        0,
-        0
-    );
-
-}
-
-
-resizeCanvas();
-
-
-window.addEventListener(
-    "resize",
-    resizeCanvas
-);
-
-
-/* =========================================================
-   DIBUJAR ONDA
-========================================================= */
-
 function drawWaveform(
     buffer
 ) {
 
-
-    const width =
-        canvas.clientWidth;
-
-
-    const height =
-        canvas.clientHeight;
-
-
     canvasContext.clearRect(
+
         0,
         0,
-        width,
-        height
+        canvas.width,
+        canvas.height
+
     );
 
 
@@ -1939,13 +2035,10 @@ function drawWaveform(
         i++
     ) {
 
-
         const x =
-            (
-                i /
-                buffer.length
-            ) *
-            width;
+            i /
+            buffer.length *
+            canvas.width;
 
 
         const y =
@@ -1953,7 +2046,7 @@ function drawWaveform(
                 1 -
                 buffer[i]
             ) *
-            height /
+            canvas.height /
             2;
 
 
@@ -1984,7 +2077,7 @@ function drawWaveform(
 
 
 /* =========================================================
-   REGISTRAR NOTA DE MELODÍA
+   REGISTRAR NOTA
 ========================================================= */
 
 function recordNote(
@@ -1993,21 +2086,6 @@ function recordNote(
     now
 ) {
 
-
-    if (
-        !note ||
-        !frequency
-    ) {
-
-        return;
-    }
-
-
-    /*
-     * Evitar duplicados
-     * demasiado rápidos.
-     */
-
     if (
         now -
         lastRecordedTime <
@@ -2015,6 +2093,7 @@ function recordNote(
     ) {
 
         return;
+
     }
 
 
@@ -2035,10 +2114,6 @@ function recordNote(
     lastRecordedTime =
         now;
 
-
-    /*
-     * Mantener últimos 5 segundos.
-     */
 
     detectedNotes =
         detectedNotes.filter(
@@ -2062,7 +2137,6 @@ function recordNote(
 
 function updateMelody() {
 
-
     if (
         detectedNotes.length === 0
     ) {
@@ -2071,6 +2145,7 @@ function updateMelody() {
             "—";
 
         return;
+
     }
 
 
@@ -2100,7 +2175,6 @@ function acceptNewNote(
     now
 ) {
 
-
     activeNote =
         note;
 
@@ -2114,7 +2188,9 @@ function acceptNewNote(
 
 
     frequencyElement.textContent =
-        frequency.toFixed(1) +
+        frequency.toFixed(
+            1
+        ) +
         " Hz";
 
 
@@ -2149,13 +2225,13 @@ function acceptNewNote(
 
 function processAudio() {
 
-
     if (
         !analyser ||
         !audioContext
     ) {
 
         return;
+
     }
 
 
@@ -2174,24 +2250,9 @@ function processAudio() {
     );
 
 
-    /*
-     * Dibujar onda.
-     */
-
     drawWaveform(
         buffer
     );
-
-
-    /*
-     * Detector monofónico.
-     */
-
-    const result =
-        detectPitch(
-            buffer,
-            audioContext.sampleRate
-        );
 
 
     const now =
@@ -2199,13 +2260,26 @@ function processAudio() {
 
 
     /* =====================================================
-       SIN SEÑAL MONOFÓNICA
+       DETECTOR MONOFÓNICO
     ===================================================== */
+
+    const result =
+        detectPitch(
+
+            buffer,
+
+            audioContext.sampleRate
+
+        );
+
 
     if (
         result === null
     ) {
 
+        /*
+         * No hay señal.
+         */
 
         if (
             activeNote !== null &&
@@ -2230,7 +2304,6 @@ function processAudio() {
 
         ) {
 
-
             activeNote =
                 null;
 
@@ -2260,9 +2333,7 @@ function processAudio() {
 
         }
 
-
     } else {
-
 
         silenceStarted =
             null;
@@ -2278,27 +2349,13 @@ function processAudio() {
             );
 
 
-        if (
-            !note
-        ) {
-
-            animation =
-                requestAnimationFrame(
-                    processAudio
-                );
-
-            return;
-        }
-
-
-        /* =================================================
-           NO EXISTE NOTA ACTIVA
-        ================================================= */
+        /*
+         * No hay nota activa.
+         */
 
         if (
             activeNote === null
         ) {
-
 
             if (
                 candidateNote ===
@@ -2306,16 +2363,6 @@ function processAudio() {
             ) {
 
                 candidateCount++;
-
-                /*
-                 * Suavizado.
-                 */
-
-                candidateFrequency =
-                    (
-                        candidateFrequency +
-                        frequency
-                    ) / 2;
 
             } else {
 
@@ -2340,9 +2387,14 @@ function processAudio() {
             if (
 
                 candidateCount >=
-                    STABILITY_REQUIRED &&
+                    STABILITY_REQUIRED
 
-                candidateStarted !== null &&
+                &&
+
+                candidateStarted !==
+                    null
+
+                &&
 
                 now -
                     candidateStarted >=
@@ -2350,28 +2402,36 @@ function processAudio() {
 
             ) {
 
+                /*
+                 * CORRECCIÓN IMPORTANTE:
+                 *
+                 * Aquí se envía la frecuencia,
+                 * NO el nombre de la nota.
+                 */
 
                 acceptNewNote(
-                    candidateNote,
+
+                    note,
+
                     candidateFrequency,
+
                     now
+
                 );
 
             }
 
-
         } else {
 
 
-            /* =================================================
-               MISMA NOTA
-            ================================================= */
+            /*
+             * Misma nota.
+             */
 
             if (
                 note ===
                 activeNote
             ) {
-
 
                 activeFrequency =
                     frequency;
@@ -2382,7 +2442,9 @@ function processAudio() {
 
 
                 frequencyElement.textContent =
-                    frequency.toFixed(1) +
+                    frequency.toFixed(
+                        1
+                    ) +
                     " Hz";
 
 
@@ -2401,23 +2463,22 @@ function processAudio() {
                 candidateStarted =
                     null;
 
-
             } else {
 
 
-                /*
-                 * Diferencia musical.
-                 */
-
                 const change =
                     centsDifference(
+
                         frequency,
+
                         activeFrequency
+
                     );
 
 
                 /*
-                 * Ignorar pequeñas variaciones.
+                 * Solo considerar cambios
+                 * musicales reales.
                  */
 
                 if (
@@ -2425,25 +2486,22 @@ function processAudio() {
                     MIN_NOTE_CHANGE_CENTS
                 ) {
 
-
                     if (
                         candidateNote ===
                         note
                     ) {
 
-
                         candidateCount++;
 
 
                         candidateFrequency =
+
                             (
                                 candidateFrequency +
                                 frequency
                             ) / 2;
 
-
                     } else {
-
 
                         candidateNote =
                             note;
@@ -2463,16 +2521,17 @@ function processAudio() {
                     }
 
 
-                    /*
-                     * Confirmar nueva nota.
-                     */
-
                     if (
 
                         candidateCount >=
-                            STABILITY_REQUIRED &&
+                            STABILITY_REQUIRED
 
-                        candidateStarted !== null &&
+                        &&
+
+                        candidateStarted !==
+                            null
+
+                        &&
 
                         now -
                             candidateStarted >=
@@ -2480,11 +2539,13 @@ function processAudio() {
 
                     ) {
 
-
                         const finalDifference =
                             centsDifference(
+
                                 candidateFrequency,
+
                                 activeFrequency
+
                             );
 
 
@@ -2493,11 +2554,14 @@ function processAudio() {
                             MIN_NOTE_CHANGE_CENTS
                         ) {
 
-
                             acceptNewNote(
+
                                 candidateNote,
+
                                 candidateFrequency,
+
                                 now
+
                             );
 
                         }
@@ -2517,12 +2581,10 @@ function processAudio() {
        DETECTOR POLIFÓNICO
     ===================================================== */
 
-    processChordDetection();
+    processChordDetection(
+        buffer
+    );
 
-
-    /*
-     * Continuar.
-     */
 
     animation =
         requestAnimationFrame(
@@ -2537,113 +2599,289 @@ function processAudio() {
 ========================================================= */
 
 document
-.getElementById("start")
-.addEventListener(
-    "click",
-    async () => {
+    .getElementById(
+        "start"
+    )
+    .addEventListener(
+
+        "click",
+
+        async () => {
+
+            try {
 
 
-        try {
+                stream =
+                    await navigator
+                        .mediaDevices
+                        .getUserMedia({
+
+                            audio: {
+
+                                echoCancellation:
+                                    false,
+
+                                noiseSuppression:
+                                    false,
+
+                                autoGainControl:
+                                    false
+
+                            }
+
+                        });
 
 
-            /*
-             * Solicitar micrófono.
-             */
+                audioContext =
+                    new (
 
-            stream =
-                await navigator
-                .mediaDevices
-                .getUserMedia({
+                        window.AudioContext ||
+                        window.webkitAudioContext
 
-                    audio: {
-
-                        echoCancellation:
-                            false,
-
-                        noiseSuppression:
-                            false,
-
-                        autoGainControl:
-                            false
-
-                    }
-
-                });
+                    )();
 
 
-            /*
-             * Crear contexto.
-             */
+                /*
+                 * En algunos dispositivos
+                 * el contexto comienza suspendido.
+                 */
 
-            audioContext =
-                new (
-                    window.AudioContext ||
-                    window.webkitAudioContext
-                )();
+                if (
+                    audioContext.state ===
+                    "suspended"
+                ) {
+
+                    await audioContext.resume();
+
+                }
 
 
-            /*
-             * En algunos navegadores
-             * el contexto queda suspendido.
-             */
+                microphone =
+                    audioContext
+                        .createMediaStreamSource(
+                            stream
+                        );
 
-            if (
-                audioContext.state ===
-                "suspended"
+
+                analyser =
+                    audioContext
+                        .createAnalyser();
+
+
+                /*
+                 * FFT grande para mejorar
+                 * resolución de frecuencias.
+                 */
+
+                analyser.fftSize =
+                    8192;
+
+
+                analyser.smoothingTimeConstant =
+                    0.15;
+
+
+                microphone.connect(
+                    analyser
+                );
+
+
+                /*
+                 * Reiniciar detector monofónico.
+                 */
+
+                activeNote =
+                    null;
+
+
+                activeFrequency =
+                    null;
+
+
+                candidateNote =
+                    null;
+
+
+                candidateFrequency =
+                    null;
+
+
+                candidateCount =
+                    0;
+
+
+                candidateStarted =
+                    null;
+
+
+                silenceStarted =
+                    null;
+
+
+                detectedNotes =
+                    [];
+
+
+                lastRecordedTime =
+                    0;
+
+
+                /*
+                 * Reiniciar detector de acordes.
+                 */
+
+                activeChord =
+                    [];
+
+
+                candidateChord =
+                    [];
+
+
+                candidateChordCount =
+                    0;
+
+
+                candidateChordStarted =
+                    null;
+
+
+                /*
+                 * Limpiar interfaz.
+                 */
+
+                noteElement.textContent =
+                    "—";
+
+
+                frequencyElement.textContent =
+                    "Toca una nota";
+
+
+                melodyElement.textContent =
+                    "—";
+
+
+                chordNotesElement.textContent =
+                    "—";
+
+
+                chordNameElement.textContent =
+                    "—";
+
+
+                statusElement.textContent =
+                    "🎙 Escuchando en tiempo real";
+
+
+                document
+                    .getElementById(
+                        "start"
+                    )
+                    .disabled =
+                    true;
+
+
+                document
+                    .getElementById(
+                        "stop"
+                    )
+                    .disabled =
+                    false;
+
+
+                processAudio();
+
+
+            } catch (
+                error
             ) {
 
-                await audioContext.resume();
+                console.error(
+                    error
+                );
+
+
+                statusElement.textContent =
+                    "No se pudo acceder al micrófono";
+
+            }
+
+        }
+
+    );
+
+
+/* =========================================================
+   DETENER
+========================================================= */
+
+document
+    .getElementById(
+        "stop"
+    )
+    .addEventListener(
+
+        "click",
+
+        () => {
+
+
+            if (
+                animation
+            ) {
+
+                cancelAnimationFrame(
+                    animation
+                );
 
             }
 
 
-            /*
-             * Micrófono.
-             */
+            if (
+                stream
+            ) {
 
-            microphone =
+                stream
+                    .getTracks()
+                    .forEach(
+
+                        track =>
+                            track.stop()
+
+                    );
+
+            }
+
+
+            if (
                 audioContext
-                .createMediaStreamSource(
-                    stream
-                );
+            ) {
+
+                audioContext.close();
+
+            }
 
 
-            /*
-             * Analizador.
-             */
+            stream =
+                null;
+
+
+            audioContext =
+                null;
+
 
             analyser =
-                audioContext
-                .createAnalyser();
+                null;
+
+
+            microphone =
+                null;
 
 
             /*
-             * FFT.
-             *
-             * 8192 ofrece mejor resolución
-             * para el detector polifónico.
+             * Reiniciar todo.
              */
-
-            analyser.fftSize =
-                8192;
-
-
-            /*
-             * Suavizado moderado.
-             */
-
-            analyser.smoothingTimeConstant =
-                0.15;
-
-
-            microphone.connect(
-                analyser
-            );
-
-
-            /* =================================================
-               REINICIAR ESTADO
-            ================================================= */
 
             activeNote =
                 null;
@@ -2673,14 +2911,6 @@ document
                 null;
 
 
-            detectedNotes =
-                [];
-
-
-            lastRecordedTime =
-                0;
-
-
             activeChord =
                 [];
 
@@ -2697,10 +2927,6 @@ document
                 null;
 
 
-            chordLastSignalTime =
-                0;
-
-
             /*
              * Limpiar interfaz.
              */
@@ -2713,10 +2939,6 @@ document
                 "Toca una nota";
 
 
-            melodyElement.textContent =
-                "—";
-
-
             chordNotesElement.textContent =
                 "—";
 
@@ -2726,250 +2948,27 @@ document
 
 
             statusElement.textContent =
-                "🎙 Escuchando en tiempo real";
-
-
-            /*
-             * Botones.
-             */
-
-            document
-            .getElementById("start")
-            .disabled =
-                true;
+                "Micrófono detenido";
 
 
             document
-            .getElementById("stop")
-            .disabled =
+                .getElementById(
+                    "start"
+                )
+                .disabled =
                 false;
 
 
-            /*
-             * Comenzar análisis.
-             */
-
-            processAudio();
-
-
-        } catch (
-            error
-        ) {
-
-
-            console.error(
-                "Error de micrófono:",
-                error
-            );
-
-
-            statusElement.textContent =
-                "No se pudo acceder al micrófono";
-
-
-            /*
-             * Limpiar si falló
-             * la inicialización.
-             */
-
-            if (
-                stream
-            ) {
-
-                stream
-                .getTracks()
-                .forEach(
-                    track =>
-                        track.stop()
-                );
-
-            }
-
-
-            stream =
-                null;
+            document
+                .getElementById(
+                    "stop"
+                )
+                .disabled =
+                true;
 
         }
 
-    }
-);
-
-
-/* =========================================================
-   DETENER
-========================================================= */
-
-document
-.getElementById("stop")
-.addEventListener(
-    "click",
-    () => {
-
-
-        /*
-         * Detener animación.
-         */
-
-        if (
-            animation
-        ) {
-
-            cancelAnimationFrame(
-                animation
-            );
-
-        }
-
-
-        animation =
-            null;
-
-
-        /*
-         * Detener micrófono.
-         */
-
-        if (
-            stream
-        ) {
-
-            stream
-            .getTracks()
-            .forEach(
-                track =>
-                    track.stop()
-            );
-
-        }
-
-
-        /*
-         * Cerrar audio.
-         */
-
-        if (
-            audioContext
-        ) {
-
-            audioContext.close();
-
-        }
-
-
-        /*
-         * Limpiar referencias.
-         */
-
-        stream =
-            null;
-
-
-        audioContext =
-            null;
-
-
-        analyser =
-            null;
-
-
-        microphone =
-            null;
-
-
-        /*
-         * Limpiar estado.
-         */
-
-        activeNote =
-            null;
-
-
-        activeFrequency =
-            null;
-
-
-        candidateNote =
-            null;
-
-
-        candidateFrequency =
-            null;
-
-
-        candidateCount =
-            0;
-
-
-        candidateStarted =
-            null;
-
-
-        silenceStarted =
-            null;
-
-
-        activeChord =
-            [];
-
-
-        candidateChord =
-            [];
-
-
-        candidateChordCount =
-            0;
-
-
-        candidateChordStarted =
-            null;
-
-
-        chordLastSignalTime =
-            0;
-
-
-        /*
-         * Interfaz.
-         */
-
-        statusElement.textContent =
-            "Micrófono detenido";
-
-
-        noteElement.textContent =
-            "—";
-
-
-        frequencyElement.textContent =
-            "Toca una nota";
-
-
-        chordNotesElement.textContent =
-            "—";
-
-
-        chordNameElement.textContent =
-            "—";
-
-
-        /*
-         * Botones.
-         */
-
-        document
-        .getElementById("start")
-        .disabled =
-            false;
-
-
-        document
-        .getElementById("stop")
-        .disabled =
-            true;
-
-    }
-);
-
+    );
 
 </script>
 
